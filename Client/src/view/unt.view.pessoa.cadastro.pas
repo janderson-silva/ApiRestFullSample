@@ -71,6 +71,7 @@ type
     var FID_PESSOA: Integer;
 
     procedure CarregarPessoa;
+    procedure ThreadPessoaTerminate(Sender: TObject);
     procedure CadastrarPessoa;
     procedure AtualizarPessoa;
   public
@@ -131,28 +132,43 @@ var
   FPessoa: iPessoa;
   JSONObject: TJSONObject;
   JSONArrayPessoa: TJSONArray;
+  t: TThread;
 begin
-  FPessoa := TPessoa.New;
-  try
-    JSONObject := FPessoa
-                      .id(FID_PESSOA)
-                    .Select;
+  t := TThread.CreateAnonymousThread(procedure
+  begin
 
-    JSONArrayPessoa := JSONObject.GetValue<TJSONArray>('pessoa');
+    FPessoa := TPessoa.New;
     try
-      chkAtivo.Checked := JSONArrayPessoa[0].GetValue<Boolean>('ativo', False);
-      edtNome.Text := JSONArrayPessoa[0].GetValue<string>('nome', '');
-      edtDocumento.Text := JSONArrayPessoa[0].GetValue<string>('documento', '');
-    finally
-      JSONObject.Free;
+
+      TThread.Synchronize(nil, procedure
+      begin
+
+        JSONObject := FPessoa
+                          .id(FID_PESSOA)
+                        .Select;
+
+        JSONArrayPessoa := JSONObject.GetValue<TJSONArray>('pessoa');
+        try
+          chkAtivo.Checked := JSONArrayPessoa[0].GetValue<Boolean>('ativo', False);
+          edtNome.Text := JSONArrayPessoa[0].GetValue<string>('nome', '');
+          edtDocumento.Text := JSONArrayPessoa[0].GetValue<string>('documento', '');
+        finally
+          JSONObject.Free;
+        end;
+
+      end);
+
+    except on E : Exception do
+      begin
+        raise Exception.Create(E.Message);
+        Exit;
+      end;
     end;
 
-  except on E : Exception do
-    begin
-      raise Exception.Create(E.Message);
-      Exit;
-    end;
-  end;
+  end);
+
+  t.OnTerminate := ThreadPessoaTerminate;
+  t.Start;
 end;
 
 procedure TfrmPessoaCadastro.IniciarTela(AID_PESSOA: Integer);
@@ -170,6 +186,18 @@ begin
     CadastrarPessoa;
 
   Close;
+end;
+
+procedure TfrmPessoaCadastro.ThreadPessoaTerminate(Sender: TObject);
+begin
+  if Sender is TThread then
+  begin
+      if Assigned(TThread(Sender).FatalException) then
+      begin
+          showmessage(Exception(TThread(sender).FatalException).Message);
+          exit;
+      end;
+  end;
 end;
 
 end.

@@ -50,6 +50,7 @@ type
   private
     { Private declarations }
     procedure CarregarPessoa;
+    procedure ThreadPessoaTerminate(Sender: TObject);
   public
     { Public declarations }
   end;
@@ -71,38 +72,52 @@ var
   FPessoa: iPessoa;
   JSONObject: TJSONObject;
   JSONArrayPessoa: TJSONArray;
-  i: Integer;
+  t: TThread;
 begin
-  FPessoa := TPessoa.New;
-  try
-    JSONObject := FPessoa
-                      //.nome('JANDERSON APARECIDO DA SILVA')
-                      //.id(1)
-                    .Select;
+  t := TThread.CreateAnonymousThread(procedure
+  begin
 
-    JSONArrayPessoa := JSONObject.GetValue<TJSONArray>('pessoa');
+    FPessoa := TPessoa.New;
     try
-      FDMemTablePessoa.Open;
-      FDMemTablePessoa.EmptyDataSet;
-      for i := 0 to JSONArrayPessoa.Count - 1 do
+
+      TThread.Synchronize(nil, procedure
       begin
-        FDMemTablePessoa.Append;
-        FDMemTablePessoa.FieldByName('id').AsInteger := JSONArrayPessoa[i].GetValue<Integer>('id', 0);
-        FDMemTablePessoa.FieldByName('ativo').AsBoolean := JSONArrayPessoa[i].GetValue<Boolean>('ativo', False);
-        FDMemTablePessoa.FieldByName('nome').AsString := JSONArrayPessoa[i].GetValue<string>('nome', '');
-        FDMemTablePessoa.FieldByName('documento').AsString := JSONArrayPessoa[i].GetValue<string>('documento', '');
-        FDMemTablePessoa.Post;
+
+        JSONObject := FPessoa
+                        .Select;
+
+        JSONArrayPessoa := JSONObject.GetValue<TJSONArray>('pessoa');
+        try
+          var i: Integer;
+
+          FDMemTablePessoa.Open;
+          FDMemTablePessoa.EmptyDataSet;
+          for i := 0 to JSONArrayPessoa.Count - 1 do
+          begin
+            FDMemTablePessoa.Append;
+            FDMemTablePessoa.FieldByName('id').AsInteger := JSONArrayPessoa[i].GetValue<Integer>('id', 0);
+            FDMemTablePessoa.FieldByName('ativo').AsBoolean := JSONArrayPessoa[i].GetValue<Boolean>('ativo', False);
+            FDMemTablePessoa.FieldByName('nome').AsString := JSONArrayPessoa[i].GetValue<string>('nome', '');
+            FDMemTablePessoa.FieldByName('documento').AsString := JSONArrayPessoa[i].GetValue<string>('documento', '');
+            FDMemTablePessoa.Post;
+          end;
+        finally
+          JSONObject.Free;
+        end;
+
+      end);
+
+    except on E : Exception do
+      begin
+        raise Exception.Create(E.Message);
+        Exit;
       end;
-    finally
-      JSONObject.Free;
     end;
 
-  except on E : Exception do
-    begin
-      raise Exception.Create(E.Message);
-      Exit;
-    end;
-  end;
+  end);
+
+  t.OnTerminate := ThreadPessoaTerminate;
+  t.Start;
 end;
 
 procedure TfrmPessoa.pnlEditarClick(Sender: TObject);
@@ -129,6 +144,18 @@ begin
     frmPessoaCadastro.ShowModal;
   finally
     FreeAndNil(frmPessoaCadastro);
+  end;
+end;
+
+procedure TfrmPessoa.ThreadPessoaTerminate(Sender: TObject);
+begin
+  if Sender is TThread then
+  begin
+      if Assigned(TThread(Sender).FatalException) then
+      begin
+          showmessage(Exception(TThread(sender).FatalException).Message);
+          exit;
+      end;
   end;
 end;
 

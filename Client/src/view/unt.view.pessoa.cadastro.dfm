@@ -358,7 +358,6 @@ object frmPessoaCadastro: TfrmPessoaCadastro
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 0
-      Visible = False
       ExplicitLeft = 6
       ExplicitTop = 11
       object pnlFotoBinaryTImage: TPanel
