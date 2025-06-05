@@ -107,7 +107,7 @@ begin
   if Fid_pessoa > 0 then
     JSONFiltro.AddPair('id_pessoa', TJSONNumber.Create(id_pessoa));
 
-  if Ffoto_binary <> Null then
+  if Ffoto_binary <> '' then
     JSONFiltro.AddPair('foto_binary', TJSONString.Create(foto_binary));
 
   if Fnome_arquivo <> '' then
