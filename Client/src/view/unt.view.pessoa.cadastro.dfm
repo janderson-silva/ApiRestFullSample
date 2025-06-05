@@ -362,6 +362,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
           Center = True
           IncrementalDisplay = True
           Proportional = True
+          OnDblClick = imgFotoBinaryDblClick
           ExplicitLeft = 4
           ExplicitTop = 4
           ExplicitHeight = 196

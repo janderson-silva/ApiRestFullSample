@@ -19,7 +19,9 @@ interface
 
 uses
   Horse,
+  Horse.OctetStream,
   Data.DB,
+  System.Classes,
   System.JSON,
   System.SysUtils,
   interfaces.pessoa_foto_binary,
@@ -66,6 +68,7 @@ var
   FPessoa_foto_binary : iPessoa_foto_binary;
   Erro : string;
   body  : TJsonValue;
+  LType: string;
 begin
   // Conexao com o banco...
   try
@@ -76,10 +79,12 @@ begin
   end;
 
   try
-    body := TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(req.Body), 0) as TJsonValue;
+    LType := Copy(Req.RawWebRequest.ContentType, Pos('/', Req.RawWebRequest.ContentType) + 1, Req.RawWebRequest.ContentType.Length);
+
+    body := TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(Req.Body), 0) as TJsonValue;
     FPessoa_foto_binary
         .id_pessoa(body.GetValue<LargeInt>('id_pessoa',0))
-        .foto_binary(body.GetValue<String>('foto_binary',''))
+        //.foto_binary(LArquivo)
         .nome_arquivo(body.GetValue<String>('nome_arquivo',''))
         .extensao(body.GetValue<String>('extensao',''))
       .Insert(Erro);
@@ -116,7 +121,7 @@ begin
     FPessoa_foto_binary
         .id(body.GetValue<LargeInt>('id',0))
         .id_pessoa(body.GetValue<LargeInt>('id_pessoa',0))
-        .foto_binary(body.GetValue<String>('foto_binary',''))
+        //.foto_binary(body.GetValue<String>('foto_binary',''))
         .nome_arquivo(body.GetValue<String>('nome_arquivo',''))
         .extensao(body.GetValue<String>('extensao',''))
       .Update(Erro);

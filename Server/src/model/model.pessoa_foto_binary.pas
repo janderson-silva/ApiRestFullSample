@@ -21,6 +21,7 @@ uses
   Data.DB,
   DataSet.Serialize,
   FireDAC.Comp.Client,
+  System.Classes,
   System.JSON,
   System.SysUtils,
   interfaces.pessoa_foto_binary,
@@ -31,7 +32,7 @@ type
   private
     Fid: LargeInt;
     Fid_pessoa: LargeInt;
-    Ffoto_binary: String;
+    Ffoto_binary: TBytes;
     Fnome_arquivo: String;
     Fextensao: String;
 
@@ -47,8 +48,8 @@ type
     function id_pessoa(Value: LargeInt): iPessoa_foto_binary; overload;
     function id_pessoa: LargeInt; overload;
 
-    function foto_binary(Value: String): iPessoa_foto_binary; overload;
-    function foto_binary: String; overload;
+    function foto_binary(Value: TBytes): iPessoa_foto_binary; overload;
+    function foto_binary: TBytes; overload;
 
     function nome_arquivo(Value: String): iPessoa_foto_binary; overload;
     function nome_arquivo: String; overload;
@@ -139,12 +140,6 @@ begin
     Result.ParamByName('id_pessoa').AsLargeInt := Fid_pessoa;
   end;
 
-  if Filtros.TryGetValue<String>('foto_binary', Ffoto_binary) then
-  begin
-    Result.SQL.Add('AND foto_binary = :foto_binary');
-    Result.ParamByName('foto_binary').AsString := Ffoto_binary;
-  end;
-
   if Filtros.TryGetValue<String>('nome_arquivo', Fnome_arquivo) then
   begin
     Result.SQL.Add('AND nome_arquivo = :nome_arquivo');
@@ -163,6 +158,7 @@ end;
 function TPessoa_foto_binary.Insert(out Erro: String): iPessoa_foto_binary;
 var
   qry: TFDQuery;
+  //Stream: TBytesStream;
 begin
   Erro := '';
   qry := TFDQuery.Create(nil);
@@ -182,7 +178,8 @@ begin
       qry.SQL.Add(')');
       qry.SQL.Add('returning id;');
       qry.ParamByName('id_pessoa').AsLargeInt:= Fid_pessoa;
-      qry.ParamByName('foto_binary').AsString:= Ffoto_binary;
+      qry.ParamByName('foto_binary').DataType := ftBlob;
+      qry.ParamByName('foto_binary').LoadFromStream(TBytesStream.Create(Ffoto_binary), ftBlob);
       qry.ParamByName('nome_arquivo').AsString:= Fnome_arquivo;
       qry.ParamByName('extensao').AsString:= Fextensao;
 
@@ -227,7 +224,7 @@ begin
       qry.SQL.Add('WHERE id = :id');
       qry.ParamByName('id').AsLargeInt:= Fid;
       qry.ParamByName('id_pessoa').AsLargeInt:= Fid_pessoa;
-      qry.ParamByName('foto_binary').AsString:= Ffoto_binary;
+      //qry.ParamByName('foto_binary').AsString:= Ffoto_binary;
       qry.ParamByName('nome_arquivo').AsString:= Fnome_arquivo;
       qry.ParamByName('extensao').AsString:= Fextensao;
       qry.ExecSQL;
@@ -287,13 +284,13 @@ begin
   Result := Fid_pessoa;
 end;
 
-function TPessoa_foto_binary.foto_binary(Value: String): iPessoa_foto_binary;
+function TPessoa_foto_binary.foto_binary(Value: TBytes): iPessoa_foto_binary;
 begin
   Ffoto_binary := Value;
   Result := Self;
 end;
 
-function TPessoa_foto_binary.foto_binary: String;
+function TPessoa_foto_binary.foto_binary: TBytes;
 begin
   Result := Ffoto_binary;
 end;

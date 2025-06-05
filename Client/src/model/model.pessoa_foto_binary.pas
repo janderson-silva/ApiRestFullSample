@@ -149,7 +149,6 @@ begin
 
   JSONBody := TJSONObject.Create;
   JSONBody.AddPair('id_pessoa', TJSONNumber.Create(id_pessoa));
-  JSONBody.AddPair('foto_binary', TJSONString.Create(foto_binary));
   JSONBody.AddPair('nome_arquivo', TJSONString.Create(nome_arquivo));
   JSONBody.AddPair('extensao', TJSONString.Create(extensao));
 
@@ -157,6 +156,7 @@ begin
                   .BaseURL(TRoute.GetPessoa_foto_binaryRoute(TRoute.ACTION_INSERT))
                   .TokenBearer(Token)
                   .AddBody(JSONBody)
+                  .AddFile('foto_binary', foto_binary, 'application/octet-stream')
                   .Post;
 
   if Resp.StatusCode <> 200 then
