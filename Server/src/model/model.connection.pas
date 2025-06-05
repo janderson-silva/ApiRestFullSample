@@ -51,15 +51,15 @@ uses
  var
     FConnection : TFDConnection;
     FCursor     : TFDGUIxWaitCursor;
-    FDriver     : TFDPhysFBDriverLink;
+    FDriver     : TFDPhysPgDriverLink;
 
-function SetupConnection(FConn: TFDConnection; DriverLink : TFDPhysFBDriverLink; cursor : TFDGUIxWaitCursor): string;
+function SetupConnection(FConn: TFDConnection; DriverLink : TFDPhysPgDriverLink; cursor : TFDGUIxWaitCursor): string;
 function Connect : TFDConnection;
 procedure Disconect;
 
 implementation
 
-function SetupConnection(FConn: TFDConnection; DriverLink : TFDPhysFBDriverLink; cursor : TFDGUIxWaitCursor): string;
+function SetupConnection(FConn: TFDConnection; DriverLink : TFDPhysPgDriverLink; cursor : TFDGUIxWaitCursor): string;
 var
   ArqIni : string;
   ini : TIniFile;
@@ -78,14 +78,14 @@ begin
       // Instanciar arquivo INI...
       ini := TIniFile.Create(ArqIni);
 
-      DriverLink.VendorLib := GetCurrentDir + '\lib\fbclient.dll';
+      DriverLink.VendorLib := GetCurrentDir + '\libPG\libpq.dll';
 
       // Buscar dados da conexão...
       FConn.Params.Values['DriverID'] := ini.ReadString('Database', 'DriverID', 'PG');
-      FConn.Params.Values['Database'] := ini.ReadString('Database', 'Database', 'C:\Janderson Projetos\ApiRestFullSample\BancoDados\DADOS.FDB');
-      FConn.Params.Values['User_name'] := ini.ReadString('Database', 'User_name', 'sysdba');
-      FConn.Params.Values['Password'] := ini.ReadString('Database', 'Password', 'masterkey');
-      FConn.Params.Values['Port'] := ini.ReadString('Database', 'Port', '3050');
+      FConn.Params.Values['Database'] := ini.ReadString('Database', 'Database', 'atron_teste');
+      FConn.Params.Values['User_name'] := ini.ReadString('Database', 'User_name', 'postgres');
+      FConn.Params.Values['Password'] := ini.ReadString('Database', 'Password', 'atron5100');
+      FConn.Params.Values['Port'] := ini.ReadString('Database', 'Port', '5432');
       FConn.Params.Values['Server'] := ini.ReadString('Database', 'Server', 'localhost');
 
       Result := 'OK';
@@ -105,7 +105,7 @@ begin
   TDataSetSerializeConfig.GetInstance.Import.DecimalSeparator := '.';
 
   FConnection := TFDConnection.Create(nil);
-  FDriver     := TFDPhysFBDriverLink.Create(nil);
+  FDriver     := TFDPhysPgDriverLink.Create(nil);
   FCursor     := TFDGUIxWaitCursor.Create(nil);
   SetupConnection(FConnection, FDriver, FCursor);
   FConnection.Connected := True;

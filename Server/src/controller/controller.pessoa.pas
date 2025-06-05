@@ -1,7 +1,7 @@
-{*******************************************************************************}
+ï»¿{*******************************************************************************}
 { Projeto: Gerador de API                                                       }
 {                                                                               }
-{ O objetivo da aplicação é facilitar a criação de Interface, model e controller}
+{ O objetivo da aplicaÃ§Ã£o Ã© facilitar a criaÃ§Ã£o de Interface, model e controller}
 { para Insert, Update, Delete e Select a partir de tabelas do banco de dados    }
 { (Postgres ou Firebird), respeitando a tipagem, PK e FK                        }
 {*******************************************************************************}
@@ -20,8 +20,6 @@ interface
 uses
   Horse,
   Data.DB,
-  DataSet.Serialize,
-  FireDAC.Comp.Client,
   System.JSON,
   System.SysUtils,
   interfaces.pessoa,
@@ -31,193 +29,134 @@ procedure Registry;
 
 implementation
 
-procedure SelectPessoa(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+procedure SelectPessoa(Req: THorseRequest; Res: THorseResponse);
 var
   FPessoa : iPessoa;
-  qry : TFDQuery;
-  erro : string;
-  ArrayPessoa : TJSONArray;
+  JSONPessoa, BodyJSON, FiltrosJSON, IncludeJSON: TJSONObject;
+  Erro : string;
 begin
   // Conexao com o banco...
   try
     FPessoa := TPessoa.New;
   except
-    res.Send('{ "Erro": "Erro ao conectar com o banco" }').Status(500);
-    exit;
+    Res.Send(TJSONObject.Create.AddPair('Erro', 'Erro ao conectar com o banco')).Status(500);
+    Exit;
   end;
 
   try
-    try
-      qry := FPessoa
-                .select('',erro);
+    BodyJSON := Req.Body<TJSONObject>;
 
-      if erro <> '' then
-        raise Exception.Create(erro)
-      else
-      begin
-        if qry.RecordCount > 0 then
-        begin
-          ArrayPessoa := qry.ToJSONArray();
-          res.Send<TJSONArray>(ArrayPessoa).Status(200);
-        end
-        else
-        begin
-          res.Send('{ "Erro": "Nenhum cadastro de pessoa encontrado" }').Status(404);
-        end;
-      end;
-    except on E : Exception do
-      begin
-        res.Send('{ "erro": "'+E.Message+'" }').Status(400);
-        Exit;
-      end;
-    end;
-  finally
-    qry.Free;
-  end;
-end;
+    FiltrosJSON := BodyJSON.GetValue<TJSONObject>('filtros', TJSONObject.Create);
+    IncludeJSON := BodyJSON.GetValue<TJSONObject>('include', TJSONObject.Create);
 
-procedure SelectPessoaID(Req: THorseRequest; Res: THorseResponse; Next: TProc);
-var
-  FPessoa : iPessoa;
-  qry : TFDQuery;
-  erro : string;
-  ObjPessoa : TJSONObject;
-begin
-  // Conexao com o banco...
-  try
-    FPessoa := TPessoa.New;
+    JSONPessoa := FPessoa.Select(Erro, FiltrosJSON, IncludeJSON);
+
+    if Erro <> '' then
+      Res.Send(TJSONObject.Create.AddPair('Erro', Erro)).Status(500)
+    else
+      Res.Send<TJSONObject>(JSONPessoa).Status(200);
   except
-    res.Send('{ "Erro": "Erro ao conectar com o banco" }').Status(500);
-    exit;
-  end;
-
-  try
-    try
-      qry := FPessoa
-                  .id(StrToIntDef(Req.Params['id'],0))
-                .select('',erro);
-
-      if erro <> '' then
-        raise Exception.Create(erro)
-      else
-      begin
-        if qry.RecordCount > 0 then
-        begin
-          ObjPessoa := qry.ToJSONObject;
-          res.Send<TJSONObject>(ObjPessoa).Status(200);
-        end
-        else
-        begin
-          res.Send('{ "Erro": "Nenhum cadastro de pessoa encontrado" }').Status(404);
-        end;
-      end;
-    except on E : Exception do
-      begin
-        res.Send('{ "erro": "'+E.Message+'" }').Status(400);
-        Exit;
-      end;
-    end;
-  finally
-    qry.Free;
+    on E: Exception do
+      Res.Send(TJSONObject.Create.AddPair('Erro', E.Message)).Status(500);
   end;
 end;
 
-procedure InsertPessoa(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+procedure InsertPessoa(Req: THorseRequest; Res: THorseResponse);
 var
   FPessoa : iPessoa;
-  erro : string;
+  Erro : string;
   body  : TJsonValue;
 begin
   // Conexao com o banco...
   try
     FPessoa := TPessoa.New;
   except
-    res.Send('{ "Erro": "Erro ao conectar com o banco" }').Status(500);
-    exit;
+    Res.Send(TJSONObject.Create.AddPair('Erro', 'Erro ao conectar com o banco')).Status(500);
+    Exit;
   end;
 
   try
     body := TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(req.Body), 0) as TJsonValue;
     FPessoa
-        .ativo(body.GetValue<Integer>('ativo',0))
-        .nome(body.GetValue<string>('nome',''))
-        .documento(body.GetValue<string>('documento',''))
-      .Insert(erro);
+        .ativo(body.GetValue<Boolean>('ativo',False))
+        .nome(body.GetValue<String>('nome',''))
+        .documento(body.GetValue<String>('documento',''))
+      .Insert(Erro);
 
     body.Free;
-    if erro <> '' then
-      raise Exception.Create(erro)
+    if Erro <> '' then
+      raise Exception.Create(Erro)
     else
-      res.Send('{ "Resposta":"salvo com sucesso","id":"'+FPessoa.id.ToString+'" }').Status(200);
+      Res.Send(TJSONObject.Create.AddPair('Sucesso', 'Salvo com sucesso').AddPair('id', FPessoa.id.ToString)).Status(200);
   except on E : Exception do
     begin
-      res.Send('{ "erro": "'+E.Message+'" }').Status(400);
+      Res.Send(TJSONObject.Create.AddPair('Erro', E.Message)).Status(500);
       Exit;
     end;
   end;
 end;
 
-procedure UpdatePessoa(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+procedure UpdatePessoa(Req: THorseRequest; Res: THorseResponse);
 var
   FPessoa : iPessoa;
-  erro : string;
+  Erro : string;
   body  : TJsonValue;
 begin
   // Conexao com o banco...
   try
     FPessoa := TPessoa.New;
   except
-    res.Send('{ "Erro": "Erro ao conectar com o banco" }').Status(500);
-    exit;
+    Res.Send(TJSONObject.Create.AddPair('Erro', 'Erro ao conectar com o banco')).Status(500);
+    Exit;
   end;
 
   try
     body := TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(req.Body), 0) as TJsonValue;
     FPessoa
-        .id(body.GetValue<Integer>('id',0))
-        .ativo(body.GetValue<Integer>('ativo',0))
-        .nome(body.GetValue<string>('nome',''))
-        .documento(body.GetValue<string>('documento',''))
-      .Update(erro);
+        .id(body.GetValue<LargeInt>('id',0))
+        .ativo(body.GetValue<Boolean>('ativo',False))
+        .nome(body.GetValue<String>('nome',''))
+        .documento(body.GetValue<String>('documento',''))
+      .Update(Erro);
 
     body.Free;
-    if erro <> '' then
-      raise Exception.Create(erro)
+    if Erro <> '' then
+      raise Exception.Create(Erro)
     else
-      res.Send('{ atualizado com sucesso }').Status(200);
+      Res.Send(TJSONObject.Create.AddPair('Sucesso', 'Atualizado com sucesso').AddPair('id', FPessoa.id.ToString)).Status(200);
   except on E : Exception do
     begin
-      res.Send('{ "erro": "'+E.Message+'" }').Status(400);
+      Res.Send(TJSONObject.Create.AddPair('Erro', E.Message)).Status(500);
       Exit;
     end;
   end;
 end;
 
-procedure DeletePessoa(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+procedure DeletePessoa(Req: THorseRequest; Res: THorseResponse);
 var
   FPessoa : iPessoa;
-  erro : string;
+  Erro : string;
 begin
   // Conexao com o banco...
   try
     FPessoa := TPessoa.New;
   except
-    res.Send('{ "Erro": "Erro ao conectar com o banco" }').Status(500);
-    exit;
+    Res.Send(TJSONObject.Create.AddPair('Erro', 'Erro ao conectar com o banco')).Status(500);
+    Exit;
   end;
 
   try
     FPessoa
         .id(Req.Params['id'].ToInteger)
-      .Delete(erro);
+      .Delete(Erro);
 
-    if erro <> '' then
-      raise Exception.Create(erro)
+    if Erro <> '' then
+      raise Exception.Create(Erro)
     else
-      res.Send('{ deletado com sucesso }').Status(200);
+      Res.Send(TJSONObject.Create.AddPair('Sucesso', 'Deletado com sucesso').AddPair('id', FPessoa.id.ToString)).Status(200);
   except on E : Exception do
     begin
-      res.Send('{ "erro": "'+E.Message+'" }').Status(400);
+      Res.Send(TJSONObject.Create.AddPair('Erro', E.Message)).Status(500);
       Exit;
     end;
   end;
@@ -225,12 +164,13 @@ end;
 
 procedure Registry;
 begin
-    THorse.Group.Prefix('v1')
-      .Get('/pessoa', SelectPessoa)
-      .Get('/pessoa/:id', SelectPessoaID)
-      .Post('/pessoa', InsertPessoa)
-      .Put('/pessoa', UpdatePessoa)
-      .Delete('/pessoa/:id', DeletePessoa);
+    THorse
+      .Group
+        .Prefix('v1/pessoa')
+          .Post('/search',SelectPessoa)
+          .Post('/insert',InsertPessoa)
+          .Put('/update',UpdatePessoa)
+          .Delete('/delete/:id',DeletePessoa);
 end;
 
 end.

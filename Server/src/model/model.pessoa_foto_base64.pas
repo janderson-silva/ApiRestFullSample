@@ -1,7 +1,7 @@
-{*******************************************************************************}
+ï»¿{*******************************************************************************}
 { Projeto: Gerador de API                                                       }
 {                                                                               }
-{ O objetivo da aplicação é facilitar a criação de Interface, model e controller}
+{ O objetivo da aplicaÃ§Ã£o Ã© facilitar a criaÃ§Ã£o de Interface, model e controller}
 { para Insert, Update, Delete e Select a partir de tabelas do banco de dados    }
 { (Postgres ou Firebird), respeitando a tipagem, PK e FK                        }
 {*******************************************************************************}
@@ -18,45 +18,44 @@ unit model.pessoa_foto_base64;
 interface
 
 uses
-  Horse,
   Data.DB,
+  DataSet.Serialize,
   FireDAC.Comp.Client,
+  System.JSON,
   System.SysUtils,
   interfaces.pessoa_foto_base64,
   model.connection;
 
 type
   TPessoa_foto_base64 = class(TInterfacedObject, iPessoa_foto_base64)
-    private
-      Fid : Integer;
-      Fid_pessoa : Integer;
-      Ffoto_base64 : string   {261};
-    public
-      constructor Create;
-      destructor Destroy; override;
-      class function New : iPessoa_foto_base64;
+  private
+    Fid: LargeInt;
+    Fid_pessoa: LargeInt;
+    Ffoto_base64: String;
 
-      function id (Value : Integer) : iPessoa_foto_base64; overload;
-      function id : Integer; overload;
+    function GetPessoa_foto_base64(const Filtros: TJSONObject): TFDQuery;
+  public
+    constructor Create; overload;
+    destructor Destroy; override;
+    class function New : iPessoa_foto_base64;
 
-      function id_pessoa (Value : Integer) : iPessoa_foto_base64; overload;
-      function id_pessoa : Integer; overload;
+    function id(Value: LargeInt): iPessoa_foto_base64; overload;
+    function id: LargeInt; overload;
 
-      function foto_base64 (Value : string   {261}) : iPessoa_foto_base64; overload;
-      function foto_base64 : string   {261}; overload;
+    function id_pessoa(Value: LargeInt): iPessoa_foto_base64; overload;
+    function id_pessoa: LargeInt; overload;
 
-      function Select(order_by: string; out erro : string) : TFDquery; overload;
-      function Insert(out erro : String) : iPessoa_foto_base64; overload;
-      function Update(out erro : String) : iPessoa_foto_base64; overload;
-      function Delete(out erro : String) : iPessoa_foto_base64; overload;
+    function foto_base64(Value: String): iPessoa_foto_base64; overload;
+    function foto_base64: String; overload;
 
-      function &End : iPessoa_foto_base64;
-
+    function Select(out Erro: string; const Filtros, Include: TJSONObject): TJSONObject; overload;
+    function Insert(out Erro: String): iPessoa_foto_base64; overload;
+    function Update(out Erro: String): iPessoa_foto_base64; overload;
+    function Delete(out Erro: String): iPessoa_foto_base64; overload;
+    function &End : iPessoa_foto_base64;
   end;
 
 implementation
-
-{ TPessoa_foto_base64 }
 
 constructor TPessoa_foto_base64.Create;
 begin
@@ -78,170 +77,191 @@ begin
   Result := Self;
 end;
 
-function TPessoa_foto_base64.Select(order_by: string; out erro: string): TFDquery;
+function TPessoa_foto_base64.Select(out Erro: string; const Filtros, Include: TJSONObject): TJSONObject;
 var
-  qry : TFDQuery;
+  qry: TFDQuery;
+  obj: TJSONObject;
+  arr: TJSONArray;
 begin
+  Erro := '';
+  Result := TJSONObject.Create;
+  arr := TJSONArray.Create;
   try
-    qry := TFDQuery.Create(nil);
-    qry.Connection := Model.Connection.FConnection;
-    qry.Active := False;
-    qry.sql.Clear;
-    qry.sql.Add('select *');
-    qry.sql.Add('from pessoa_foto_base64');
-    qry.sql.Add('where 1 = 1');
-
-    if Trim(Fid) <> '' then
+    qry := Getpessoa_foto_base64(Filtros);
+    while not qry.Eof do
     begin
-      qry.SQL.Add('and id = :id');
-      qry.ParamByName('id').Value := Fid;
+      obj := qry.ToJSONObject;
+      arr.AddElement(obj);
+      qry.Next;
     end;
-    if Trim(Fid_pessoa) <> '' then
+    Result.AddPair('total', TJSONNumber.Create(arr.Count));
+    Result.AddPair('pessoa_foto_base64', arr);
+  except
+    on E: Exception do
     begin
-      qry.SQL.Add('and id_pessoa = :id_pessoa');
-      qry.ParamByName('id_pessoa').Value := Fid_pessoa;
-    end;
-    if Trim(Ffoto_base64) <> '' then
-    begin
-      qry.SQL.Add('and foto_base64 = :foto_base64');
-      qry.ParamByName('foto_base64').Value := Ffoto_base64;
-    end;
-
-    if Trim(order_by) <> '' then
-      qry.sql.Add('order by ' + order_by);
-
-    qry.Active := True;
-    erro := '';
-    Result := qry;
-  except on ex:exception do
-    begin
-      erro := 'Erro ao consultar pessoa_foto_base64: ' + ex.Message;
+      Erro := E.Message;
+      Result.Free;
       Result := nil;
     end;
   end;
 end;
 
-function TPessoa_foto_base64.Insert(out erro: String): iPessoa_foto_base64;
-var
-  qry : TFDQuery;
+function TPessoa_foto_base64.Getpessoa_foto_base64(const Filtros: TJSONObject): TFDQuery;
 begin
+  Result := TFDQuery.Create(nil);
+  Result.Connection := model.connection.FConnection;
+  Result.SQL.Add('SELECT');
+  Result.SQL.Add('    id,');
+  Result.SQL.Add('    id_pessoa,');
+  Result.SQL.Add('    foto_base64');
+  Result.SQL.Add('FROM public.pessoa_foto_base64');
+  Result.SQL.Add('WHERE 1=1');
+
+  if Filtros.TryGetValue<LargeInt>('id', Fid) then
+  begin
+    Result.SQL.Add('AND id = :id');
+    Result.ParamByName('id').AsLargeInt := Fid;
+  end;
+
+  if Filtros.TryGetValue<LargeInt>('id_pessoa', Fid_pessoa) then
+  begin
+    Result.SQL.Add('AND id_pessoa = :id_pessoa');
+    Result.ParamByName('id_pessoa').AsLargeInt := Fid_pessoa;
+  end;
+
+  if Filtros.TryGetValue<String>('foto_base64', Ffoto_base64) then
+  begin
+    Result.SQL.Add('AND foto_base64 = :foto_base64');
+    Result.ParamByName('foto_base64').AsString := Ffoto_base64;
+  end;
+
+  Result.Open;
+end;
+
+function TPessoa_foto_base64.Insert(out Erro: String): iPessoa_foto_base64;
+var
+  qry: TFDQuery;
+begin
+  Erro := '';
+  qry := TFDQuery.Create(nil);
   try
-    qry := TFDQuery.Create(nil);
-    qry.Connection := Model.Connection.FConnection;
-    qry.Active := False;
-    qry.sql.Clear;
-    qry.sql.Add('insert into pessoa_foto_base64(');
-    qry.SQL.Add('    id_pessoa,');
-    qry.SQL.Add('    foto_base64');
-    qry.SQL.Add(') values (');
-    qry.SQL.Add('    :id_pessoa,');
-    qry.SQL.Add('    :foto_base64');
-    qry.SQL.Add(')');
-    qry.SQL.Add('returning id;');
-    qry.ParamByName('id_pessoa').Value := Fid_pessoa;
-    qry.ParamByName('foto_base64').Value := Ffoto_base64;
+    try
+      qry.Connection := model.connection.FConnection;
+      qry.SQL.Add('INSERT INTO public.pessoa_foto_base64 (');
+      qry.SQL.Add('    id_pessoa,');
+      qry.SQL.Add('    foto_base64');
+      qry.SQL.Add(') VALUES (');
+      qry.SQL.Add('    :id_pessoa,');
+      qry.SQL.Add('    :foto_base64');
+      qry.SQL.Add(')');
+      qry.SQL.Add('returning id;');
+      qry.ParamByName('id_pessoa').AsLargeInt:= Fid_pessoa;
+      qry.ParamByName('foto_base64').AsString:= Ffoto_base64;
 
-    {Aqui, a parte RETURNING id é uma característica de alguns bancos de dados,
-    como PostgreSQL, que permite retornar o valor de uma coluna após a inserção.
-    Essa funcionalidade faz com que o INSERT se comporte de maneira semelhante a um SELECT,
-    retornando um conjunto de resultados com a coluna id.
+      {Aqui, a parte RETURNING id Ã© uma caracterÃ­stica de alguns bancos de dados,
+      como PostgreSQL, que permite retornar o valor de uma coluna apÃ³s a inserÃ§Ã£o.
+      Essa funcionalidade faz com que o INSERT se comporte de maneira semelhante a um SELECT,
+      retornando um conjunto de resultados com a coluna id.
 
-    Então, ao usar Open, você está abrindo um DataSet que contém a linha retornada pelo RETURNING,
-    e você pode acessar o valor da coluna id diretamente a partir do FDQuery1.Fields[0].AsInteger.}
+      EntÃ£o, ao usar Open, vocÃª estÃ¡ abrindo um DataSet que contÃ©m a linha retornada pelo RETURNING,
+      e vocÃª pode acessar o valor da coluna id diretamente a partir do FDQuery1.Fields[0].AsInteger.}
 
-    qry.Open;
+      qry.Open;
 
-    // Obter o ID retornado
-    id(qry.Fields[0].AsInteger);
-
-    qry.Free;
-    erro := '';
-  except on ex:exception do
-    begin
-      erro := 'Erro ao inserir pessoa_foto_base64: ' + ex.Message;
+      // Obter o retorno
+      id(qry.Fields[0].AsInteger);
+    except
+      on E: Exception do
+      begin
+        Erro := E.Message;
+      end;
     end;
+  finally
+    qry.Free;
   end;
 end;
 
-function TPessoa_foto_base64.Update(out erro: String): iPessoa_foto_base64;
+function TPessoa_foto_base64.Update(out Erro: String): iPessoa_foto_base64;
 var
-  qry : TFDQuery;
+  qry: TFDQuery;
 begin
+  Erro := '';
+  qry := TFDQuery.Create(nil);
   try
-    qry := TFDQuery.Create(nil);
-    qry.Connection := Model.Connection.FConnection;
-    qry.Active := False;
-    qry.sql.Clear;
-    qry.sql.Add('update pessoa_foto_base64 set');
-    qry.SQL.Add('    id_pessoa = :id_pessoa,');
-    qry.SQL.Add('    foto_base64 = :foto_base64');
-    qry.sql.Add('where 1 = 1');
-    qry.SQL.Add('and id = :id');
-    qry.ParamByName('id').Value := Fid;
-    qry.ParamByName('id_pessoa').Value := Fid_pessoa;
-    qry.ParamByName('foto_base64').Value := Ffoto_base64;
-    qry.ExecSQL;
-    qry.Free;
-    erro := '';
-  except on ex:exception do
-    begin
-      erro := 'Erro ao atualizar pessoa_foto_base64: ' + ex.Message;
+    try
+      qry.Connection := model.connection.FConnection;
+      qry.SQL.Add('UPDATE public.pessoa_foto_base64 SET');
+      qry.SQL.Add('    id = :id,');
+      qry.SQL.Add('    id_pessoa = :id_pessoa,');
+      qry.SQL.Add('    foto_base64 = :foto_base64');
+      qry.SQL.Add('WHERE id = :id');
+      qry.ParamByName('id').AsLargeInt:= Fid;
+      qry.ParamByName('id_pessoa').AsLargeInt:= Fid_pessoa;
+      qry.ParamByName('foto_base64').AsString:= Ffoto_base64;
+      qry.ExecSQL;
+    except
+      on E: Exception do
+      begin
+        Erro := E.Message;
+      end;
     end;
+  finally
+    qry.Free;
   end;
 end;
 
-function TPessoa_foto_base64.Delete(out erro: String): iPessoa_foto_base64;
+function TPessoa_foto_base64.Delete(out Erro: String): iPessoa_foto_base64;
 var
-  qry : TFDQuery;
+  qry: TFDQuery;
 begin
+  Erro := '';
+  qry := TFDQuery.Create(nil);
   try
-    qry := TFDQuery.Create(nil);
-    qry.Connection := Model.Connection.FConnection;
-    qry.Active := False;
-    qry.SQL.Clear;
-    qry.SQL.Add('delete from pessoa_foto_base64');
-    qry.sql.Add('where 1 = 1');
-    qry.SQL.Add('and id = :id');
-    qry.ParamByName('id').Value := Fid;
-    qry.ExecSQL;
-    qry.Free;
-    erro := '';
-  except on ex:exception do
-    begin
-      erro := 'Erro ao deletar pessoa_foto_base64: ' + ex.Message;
+    try
+      qry.Connection := model.connection.FConnection;
+      qry.SQL.Add('DELETE FROM pessoa_foto_base64 WHERE id = :id');
+      qry.ParamByName('id').AsLargeInt := Fid;
+      qry.ExecSQL;
+    except
+      on E: Exception do
+      begin
+        Erro := E.Message;
+      end;
     end;
+  finally
+    qry.Free;
   end;
 end;
 
-function TPessoa_foto_base64.id (Value : Integer) : iPessoa_foto_base64;
+function TPessoa_foto_base64.id(Value: LargeInt): iPessoa_foto_base64;
 begin
-  Result := Self;
   Fid := Value;
+  Result := Self;
 end;
 
-function TPessoa_foto_base64.id : Integer;
+function TPessoa_foto_base64.id: LargeInt;
 begin
   Result := Fid;
 end;
 
-function TPessoa_foto_base64.id_pessoa (Value : Integer) : iPessoa_foto_base64;
+function TPessoa_foto_base64.id_pessoa(Value: LargeInt): iPessoa_foto_base64;
 begin
-  Result := Self;
   Fid_pessoa := Value;
+  Result := Self;
 end;
 
-function TPessoa_foto_base64.id_pessoa : Integer;
+function TPessoa_foto_base64.id_pessoa: LargeInt;
 begin
   Result := Fid_pessoa;
 end;
 
-function TPessoa_foto_base64.foto_base64 (Value : string   {261}) : iPessoa_foto_base64;
+function TPessoa_foto_base64.foto_base64(Value: String): iPessoa_foto_base64;
 begin
-  Result := Self;
   Ffoto_base64 := Value;
+  Result := Self;
 end;
 
-function TPessoa_foto_base64.foto_base64 : string   {261};
+function TPessoa_foto_base64.foto_base64: String;
 begin
   Result := Ffoto_base64;
 end;

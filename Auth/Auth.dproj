@@ -1,15 +1,15 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{079A6437-487E-4557-9F19-C5D4E371B6E9}</ProjectGuid>
+        <ProjectGuid>{0EA1D2B6-4846-4D7A-9853-E5B5F7F786AA}</ProjectGuid>
         <ProjectVersion>20.2</ProjectVersion>
         <FrameworkType>None</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
-        <ProjectName Condition="'$(ProjectName)'==''">Server</ProjectName>
+        <ProjectName Condition="'$(ProjectName)'==''">Auth</ProjectName>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Console</AppType>
-        <MainSource>Server.dpr</MainSource>
+        <MainSource>Auth.dpr</MainSource>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -84,7 +84,7 @@
         <DCC_F>false</DCC_F>
         <DCC_K>false</DCC_K>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
-        <SanitizedProjectName>Server</SanitizedProjectName>
+        <SanitizedProjectName>Auth</SanitizedProjectName>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <DCC_UsePackage>fmx;DbxCommonDriver;bindengine;IndyIPCommon;emsclient;IndyProtocols;dbxcds;FireDACSqliteDriver;DbxClientDriver;soapmidas;dbexpress;inet;FireDACDBXDriver;CustomIPTransport;IndySystem;FireDACCommon;emsserverresource;bindcompdbx;rtl;DBXSqliteDriver;DataSnapFireDAC;FireDAC;xmlrtl;dsnap;DataSnapNativeClient;emshosting;FireDACCommonDriver;IndyIPClient;emsedge;bindcompfmx;fmxFireDAC;DataSnapCommon;fmxase;dbrtl;DBXInterBaseDriver;bindcomp;inetstn;IndyCore;RESTBackendComponents;RESTComponents;IndyIPServer;dsnapxml;DataSnapClient;DataSnapProviderClient;emsclientfiredac;FireDACDSDriver;tethering;CloudService;soaprtl;soapserver;FireDACIBDriver;$(DCC_UsePackage)</DCC_UsePackage>
@@ -209,19 +209,9 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="src\controller\controller.login.pas"/>
-        <DCCReference Include="src\controller\controller.pessoa.pas"/>
-        <DCCReference Include="src\controller\controller.pessoa_foto_base64.pas"/>
-        <DCCReference Include="src\controller\controller.pessoa_foto_binary.pas"/>
-        <DCCReference Include="src\interface\interfaces.login.pas"/>
-        <DCCReference Include="src\interface\interfaces.pessoa.pas"/>
-        <DCCReference Include="src\interface\interfaces.pessoa_foto_base64.pas"/>
-        <DCCReference Include="src\interface\interfaces.pessoa_foto_binary.pas"/>
-        <DCCReference Include="src\model\model.connection.pas"/>
-        <DCCReference Include="src\model\model.login.pas"/>
-        <DCCReference Include="src\model\model.pessoa.pas"/>
-        <DCCReference Include="src\model\model.pessoa_foto_base64.pas"/>
-        <DCCReference Include="src\model\model.pessoa_foto_binary.pas"/>
+        <DCCReference Include="src\controller\controller.auth.pas"/>
+        <DCCReference Include="src\interface\interfaces.auth.pas"/>
+        <DCCReference Include="src\model\model.auth.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -240,7 +230,7 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">Server.dpr</Source>
+                    <Source Name="MainSource">Auth.dpr</Source>
                 </Source>
                 <Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcboffice2k290.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
@@ -265,9 +255,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\Debug\Server.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="bin\Auth.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>Server.exe</RemoteName>
+                        <RemoteName>Auth.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

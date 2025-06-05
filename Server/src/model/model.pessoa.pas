@@ -1,7 +1,7 @@
-{*******************************************************************************}
+ï»¿{*******************************************************************************}
 { Projeto: Gerador de API                                                       }
 {                                                                               }
-{ O objetivo da aplicação é facilitar a criação de Interface, model e controller}
+{ O objetivo da aplicaÃ§Ã£o Ã© facilitar a criaÃ§Ã£o de Interface, model e controller}
 { para Insert, Update, Delete e Select a partir de tabelas do banco de dados    }
 { (Postgres ou Firebird), respeitando a tipagem, PK e FK                        }
 {*******************************************************************************}
@@ -18,49 +18,48 @@ unit model.pessoa;
 interface
 
 uses
-  Horse,
   Data.DB,
+  DataSet.Serialize,
   FireDAC.Comp.Client,
+  System.JSON,
   System.SysUtils,
   interfaces.pessoa,
   model.connection;
 
 type
   TPessoa = class(TInterfacedObject, iPessoa)
-    private
-      Fid : Integer;
-      Fativo : Integer;
-      Fnome : string;
-      Fdocumento : string;
-    public
-      constructor Create;
-      destructor Destroy; override;
-      class function New : iPessoa;
+  private
+    Fid: LargeInt;
+    Fativo: Boolean;
+    Fnome: String;
+    Fdocumento: String;
 
-      function id (Value : Integer) : iPessoa; overload;
-      function id : Integer; overload;
+    function GetPessoa(const Filtros: TJSONObject): TFDQuery;
+  public
+    constructor Create; overload;
+    destructor Destroy; override;
+    class function New : iPessoa;
 
-      function ativo (Value : Integer) : iPessoa; overload;
-      function ativo : Integer; overload;
+    function id(Value: LargeInt): iPessoa; overload;
+    function id: LargeInt; overload;
 
-      function nome (Value : string) : iPessoa; overload;
-      function nome : string; overload;
+    function ativo(Value: Boolean): iPessoa; overload;
+    function ativo: Boolean; overload;
 
-      function documento (Value : string) : iPessoa; overload;
-      function documento : string; overload;
+    function nome(Value: String): iPessoa; overload;
+    function nome: String; overload;
 
-      function Select(order_by: string; out erro : string) : TFDquery; overload;
-      function Insert(out erro : String) : iPessoa; overload;
-      function Update(out erro : String) : iPessoa; overload;
-      function Delete(out erro : String) : iPessoa; overload;
+    function documento(Value: String): iPessoa; overload;
+    function documento: String; overload;
 
-      function &End : iPessoa;
-
+    function Select(out Erro: string; const Filtros, Include: TJSONObject): TJSONObject; overload;
+    function Insert(out Erro: String): iPessoa; overload;
+    function Update(out Erro: String): iPessoa; overload;
+    function Delete(out Erro: String): iPessoa; overload;
+    function &End : iPessoa;
   end;
 
 implementation
-
-{ TPessoa }
 
 constructor TPessoa.Create;
 begin
@@ -82,191 +81,214 @@ begin
   Result := Self;
 end;
 
-function TPessoa.Select(order_by: string; out erro: string): TFDquery;
+function TPessoa.Select(out Erro: string; const Filtros, Include: TJSONObject): TJSONObject;
 var
-  qry : TFDQuery;
+  qry: TFDQuery;
+  obj: TJSONObject;
+  arr: TJSONArray;
 begin
+  Erro := '';
+  Result := TJSONObject.Create;
+  arr := TJSONArray.Create;
   try
-    qry := TFDQuery.Create(nil);
-    qry.Connection := Model.Connection.FConnection;
-    qry.Active := False;
-    qry.sql.Clear;
-    qry.sql.Add('select *');
-    qry.sql.Add('from pessoa');
-    qry.sql.Add('where 1 = 1');
-
-    if Trim(Fid) <> '' then
+    qry := Getpessoa(Filtros);
+    while not qry.Eof do
     begin
-      qry.SQL.Add('and id = :id');
-      qry.ParamByName('id').Value := Fid;
+      obj := qry.ToJSONObject;
+      arr.AddElement(obj);
+      qry.Next;
     end;
-    if Trim(Fativo) <> '' then
+    Result.AddPair('total', TJSONNumber.Create(arr.Count));
+    Result.AddPair('pessoa', arr);
+  except
+    on E: Exception do
     begin
-      qry.SQL.Add('and ativo = :ativo');
-      qry.ParamByName('ativo').Value := Fativo;
-    end;
-    if Trim(Fnome) <> '' then
-    begin
-      qry.SQL.Add('and nome = :nome');
-      qry.ParamByName('nome').Value := Fnome;
-    end;
-    if Trim(Fdocumento) <> '' then
-    begin
-      qry.SQL.Add('and documento = :documento');
-      qry.ParamByName('documento').Value := Fdocumento;
-    end;
-
-    if Trim(order_by) <> '' then
-      qry.sql.Add('order by ' + order_by);
-
-    qry.Active := True;
-    erro := '';
-    Result := qry;
-  except on ex:exception do
-    begin
-      erro := 'Erro ao consultar pessoa: ' + ex.Message;
+      Erro := E.Message;
+      Result.Free;
       Result := nil;
     end;
   end;
 end;
 
-function TPessoa.Insert(out erro: String): iPessoa;
-var
-  qry : TFDQuery;
+function TPessoa.Getpessoa(const Filtros: TJSONObject): TFDQuery;
 begin
+  Result := TFDQuery.Create(nil);
+  Result.Connection := model.connection.FConnection;
+  Result.SQL.Add('SELECT');
+  Result.SQL.Add('    id,');
+  Result.SQL.Add('    ativo,');
+  Result.SQL.Add('    nome,');
+  Result.SQL.Add('    documento');
+  Result.SQL.Add('FROM public.pessoa');
+  Result.SQL.Add('WHERE 1=1');
+
+  if Filtros.TryGetValue<LargeInt>('id', Fid) then
+  begin
+    Result.SQL.Add('AND id = :id');
+    Result.ParamByName('id').AsLargeInt := Fid;
+  end;
+
+  if Filtros.TryGetValue<Boolean>('ativo', Fativo) then
+  begin
+    Result.SQL.Add('AND ativo = :ativo');
+    Result.ParamByName('ativo').AsBoolean := Fativo;
+  end;
+
+  if Filtros.TryGetValue<String>('nome', Fnome) then
+  begin
+    Result.SQL.Add('AND nome = :nome');
+    Result.ParamByName('nome').AsString := Fnome;
+  end;
+
+  if Filtros.TryGetValue<String>('documento', Fdocumento) then
+  begin
+    Result.SQL.Add('AND documento = :documento');
+    Result.ParamByName('documento').AsString := Fdocumento;
+  end;
+
+  Result.Open;
+end;
+
+function TPessoa.Insert(out Erro: String): iPessoa;
+var
+  qry: TFDQuery;
+begin
+  Erro := '';
+  qry := TFDQuery.Create(nil);
   try
-    qry := TFDQuery.Create(nil);
-    qry.Connection := Model.Connection.FConnection;
-    qry.Active := False;
-    qry.sql.Clear;
-    qry.sql.Add('insert into pessoa(');
-    qry.SQL.Add('    ativo,');
-    qry.SQL.Add('    nome,');
-    qry.SQL.Add('    documento');
-    qry.SQL.Add(') values (');
-    qry.SQL.Add('    :ativo,');
-    qry.SQL.Add('    :nome,');
-    qry.SQL.Add('    :documento');
-    qry.SQL.Add(')');
-    qry.SQL.Add('returning id;');
-    qry.ParamByName('ativo').Value := Fativo;
-    qry.ParamByName('nome').Value := Fnome;
-    qry.ParamByName('documento').Value := Fdocumento;
+    try
+      qry.Connection := model.connection.FConnection;
+      qry.SQL.Add('INSERT INTO public.pessoa (');
+      qry.SQL.Add('    ativo,');
+      qry.SQL.Add('    nome,');
+      qry.SQL.Add('    documento');
+      qry.SQL.Add(') VALUES (');
+      qry.SQL.Add('    :ativo,');
+      qry.SQL.Add('    :nome,');
+      qry.SQL.Add('    :documento');
+      qry.SQL.Add(')');
+      qry.SQL.Add('returning id;');
+      qry.ParamByName('ativo').AsBoolean:= Fativo;
+      qry.ParamByName('nome').AsString:= Fnome;
+      qry.ParamByName('documento').AsString:= Fdocumento;
 
-    {Aqui, a parte RETURNING id é uma característica de alguns bancos de dados,
-    como PostgreSQL, que permite retornar o valor de uma coluna após a inserção.
-    Essa funcionalidade faz com que o INSERT se comporte de maneira semelhante a um SELECT,
-    retornando um conjunto de resultados com a coluna id.
+      {Aqui, a parte RETURNING id Ã© uma caracterÃ­stica de alguns bancos de dados,
+      como PostgreSQL, que permite retornar o valor de uma coluna apÃ³s a inserÃ§Ã£o.
+      Essa funcionalidade faz com que o INSERT se comporte de maneira semelhante a um SELECT,
+      retornando um conjunto de resultados com a coluna id.
 
-    Então, ao usar Open, você está abrindo um DataSet que contém a linha retornada pelo RETURNING,
-    e você pode acessar o valor da coluna id diretamente a partir do FDQuery1.Fields[0].AsInteger.}
+      EntÃ£o, ao usar Open, vocÃª estÃ¡ abrindo um DataSet que contÃ©m a linha retornada pelo RETURNING,
+      e vocÃª pode acessar o valor da coluna id diretamente a partir do FDQuery1.Fields[0].AsInteger.}
 
-    qry.Open;
+      qry.Open;
 
-    // Obter o ID retornado
-    id(qry.Fields[0].AsInteger);
-
-    qry.Free;
-    erro := '';
-  except on ex:exception do
-    begin
-      erro := 'Erro ao inserir pessoa: ' + ex.Message;
+      // Obter o retorno
+      id(qry.Fields[0].AsInteger);
+    except
+      on E: Exception do
+      begin
+        Erro := E.Message;
+      end;
     end;
+  finally
+    qry.Free;
   end;
 end;
 
-function TPessoa.Update(out erro: String): iPessoa;
+function TPessoa.Update(out Erro: String): iPessoa;
 var
-  qry : TFDQuery;
+  qry: TFDQuery;
 begin
+  Erro := '';
+  qry := TFDQuery.Create(nil);
   try
-    qry := TFDQuery.Create(nil);
-    qry.Connection := Model.Connection.FConnection;
-    qry.Active := False;
-    qry.sql.Clear;
-    qry.sql.Add('update pessoa set');
-    qry.SQL.Add('    ativo = :ativo,');
-    qry.SQL.Add('    nome = :nome,');
-    qry.SQL.Add('    documento = :documento');
-    qry.sql.Add('where 1 = 1');
-    qry.SQL.Add('and id = :id');
-    qry.ParamByName('id').Value := Fid;
-    qry.ParamByName('ativo').Value := Fativo;
-    qry.ParamByName('nome').Value := Fnome;
-    qry.ParamByName('documento').Value := Fdocumento;
-    qry.ExecSQL;
-    qry.Free;
-    erro := '';
-  except on ex:exception do
-    begin
-      erro := 'Erro ao atualizar pessoa: ' + ex.Message;
+    try
+      qry.Connection := model.connection.FConnection;
+      qry.SQL.Add('UPDATE public.pessoa SET');
+      qry.SQL.Add('    id = :id,');
+      qry.SQL.Add('    ativo = :ativo,');
+      qry.SQL.Add('    nome = :nome,');
+      qry.SQL.Add('    documento = :documento');
+      qry.SQL.Add('WHERE id = :id');
+      qry.ParamByName('id').AsLargeInt:= Fid;
+      qry.ParamByName('ativo').AsBoolean:= Fativo;
+      qry.ParamByName('nome').AsString:= Fnome;
+      qry.ParamByName('documento').AsString:= Fdocumento;
+      qry.ExecSQL;
+    except
+      on E: Exception do
+      begin
+        Erro := E.Message;
+      end;
     end;
+  finally
+    qry.Free;
   end;
 end;
 
-function TPessoa.Delete(out erro: String): iPessoa;
+function TPessoa.Delete(out Erro: String): iPessoa;
 var
-  qry : TFDQuery;
+  qry: TFDQuery;
 begin
+  Erro := '';
+  qry := TFDQuery.Create(nil);
   try
-    qry := TFDQuery.Create(nil);
-    qry.Connection := Model.Connection.FConnection;
-    qry.Active := False;
-    qry.SQL.Clear;
-    qry.SQL.Add('delete from pessoa');
-    qry.sql.Add('where 1 = 1');
-    qry.SQL.Add('and id = :id');
-    qry.ParamByName('id').Value := Fid;
-    qry.ExecSQL;
-    qry.Free;
-    erro := '';
-  except on ex:exception do
-    begin
-      erro := 'Erro ao deletar pessoa: ' + ex.Message;
+    try
+      qry.Connection := model.connection.FConnection;
+      qry.SQL.Add('DELETE FROM pessoa WHERE id = :id');
+      qry.ParamByName('id').AsLargeInt := Fid;
+      qry.ExecSQL;
+    except
+      on E: Exception do
+      begin
+        Erro := E.Message;
+      end;
     end;
+  finally
+    qry.Free;
   end;
 end;
 
-function TPessoa.id (Value : Integer) : iPessoa;
+function TPessoa.id(Value: LargeInt): iPessoa;
 begin
-  Result := Self;
   Fid := Value;
+  Result := Self;
 end;
 
-function TPessoa.id : Integer;
+function TPessoa.id: LargeInt;
 begin
   Result := Fid;
 end;
 
-function TPessoa.ativo (Value : Integer) : iPessoa;
+function TPessoa.ativo(Value: Boolean): iPessoa;
 begin
-  Result := Self;
   Fativo := Value;
+  Result := Self;
 end;
 
-function TPessoa.ativo : Integer;
+function TPessoa.ativo: Boolean;
 begin
   Result := Fativo;
 end;
 
-function TPessoa.nome (Value : string) : iPessoa;
+function TPessoa.nome(Value: String): iPessoa;
 begin
-  Result := Self;
   Fnome := Value;
+  Result := Self;
 end;
 
-function TPessoa.nome : string;
+function TPessoa.nome: String;
 begin
   Result := Fnome;
 end;
 
-function TPessoa.documento (Value : string) : iPessoa;
+function TPessoa.documento(Value: String): iPessoa;
 begin
-  Result := Self;
   Fdocumento := Value;
+  Result := Self;
 end;
 
-function TPessoa.documento : string;
+function TPessoa.documento: String;
 begin
   Result := Fdocumento;
 end;

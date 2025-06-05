@@ -13,7 +13,7 @@
 
 
 
-unit interfaces.login;
+unit interfaces.pessoa_foto_binary;
 
 interface
 
@@ -22,24 +22,27 @@ uses
   System.JSON;
 
 type
-  iLogin = interface
-    function id(Value: LargeInt): iLogin; overload;
+  iPessoa_foto_binary = interface
+    function id(Value: LargeInt): iPessoa_foto_binary; overload;
     function id: LargeInt; overload;
 
-    function ativo(Value: Boolean): iLogin; overload;
-    function ativo: Boolean; overload;
+    function id_pessoa(Value: LargeInt): iPessoa_foto_binary; overload;
+    function id_pessoa: LargeInt; overload;
 
-    function email(Value: String): iLogin; overload;
-    function email: String; overload;
+    function foto_binary(Value: String): iPessoa_foto_binary; overload;
+    function foto_binary: String; overload;
 
-    function senha(Value: String): iLogin; overload;
-    function senha: String; overload;
+    function nome_arquivo(Value: String): iPessoa_foto_binary; overload;
+    function nome_arquivo: String; overload;
 
-    function Select(out Erro: string; const Filtros, Include: TJSONObject): TJSONObject; overload;
-    function Insert(out Erro: String): iLogin; overload;
-    function Update(out Erro: String): iLogin; overload;
-    function Delete(out Erro: String): iLogin; overload;
-    function &End : iLogin;
+    function extensao(Value: String): iPessoa_foto_binary; overload;
+    function extensao: String; overload;
+
+    function Select: TJSONObject; overload;
+    function Insert(OnMessage: Boolean): String; overload;
+    function Update(OnMessage: Boolean): String; overload;
+    function Delete(OnMessage: Boolean): String; overload;
+    function &End : iPessoa_foto_binary;
   end;
 
 implementation

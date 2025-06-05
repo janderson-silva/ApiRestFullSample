@@ -1,7 +1,7 @@
-{*******************************************************************************}
+ï»¿{*******************************************************************************}
 { Projeto: Gerador de API                                                       }
 {                                                                               }
-{ O objetivo da aplicação é facilitar a criação de Interface, model e controller}
+{ O objetivo da aplicaÃ§Ã£o Ã© facilitar a criaÃ§Ã£o de Interface, model e controller}
 { para Insert, Update, Delete e Select a partir de tabelas do banco de dados    }
 { (Postgres ou Firebird), respeitando a tipagem, PK e FK                        }
 {*******************************************************************************}
@@ -19,29 +19,27 @@ interface
 
 uses
   Data.DB,
-  FireDAC.Comp.Client;
+  System.JSON;
 
 type
   iPessoa = interface
-    function id (Value : Integer) : iPessoa; overload;
-    function id : Integer; overload;
+    function id(Value: LargeInt): iPessoa; overload;
+    function id: LargeInt; overload;
 
-    function ativo (Value : Integer) : iPessoa; overload;
-    function ativo : Integer; overload;
+    function ativo(Value: Boolean): iPessoa; overload;
+    function ativo: Boolean; overload;
 
-    function nome (Value : string) : iPessoa; overload;
-    function nome : string; overload;
+    function nome(Value: String): iPessoa; overload;
+    function nome: String; overload;
 
-    function documento (Value : string) : iPessoa; overload;
-    function documento : string; overload;
+    function documento(Value: String): iPessoa; overload;
+    function documento: String; overload;
 
-    function Select(out erro : string) : TFDquery; overload;
-    function Insert(out erro : String) : iPessoa; overload;
-    function Update(out erro : String) : iPessoa; overload;
-    function Delete(out erro : String) : iPessoa; overload;
-
+    function Select(out Erro: string; const Filtros, Include: TJSONObject): TJSONObject; overload;
+    function Insert(out Erro: String): iPessoa; overload;
+    function Update(out Erro: String): iPessoa; overload;
+    function Delete(out Erro: String): iPessoa; overload;
     function &End : iPessoa;
-
   end;
 
 implementation

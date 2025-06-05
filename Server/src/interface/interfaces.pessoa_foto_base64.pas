@@ -1,7 +1,7 @@
-{*******************************************************************************}
+ï»¿{*******************************************************************************}
 { Projeto: Gerador de API                                                       }
 {                                                                               }
-{ O objetivo da aplicação é facilitar a criação de Interface, model e controller}
+{ O objetivo da aplicaÃ§Ã£o Ã© facilitar a criaÃ§Ã£o de Interface, model e controller}
 { para Insert, Update, Delete e Select a partir de tabelas do banco de dados    }
 { (Postgres ou Firebird), respeitando a tipagem, PK e FK                        }
 {*******************************************************************************}
@@ -19,26 +19,24 @@ interface
 
 uses
   Data.DB,
-  FireDAC.Comp.Client;
+  System.JSON;
 
 type
   iPessoa_foto_base64 = interface
-    function id (Value : Integer) : iPessoa_foto_base64; overload;
-    function id : Integer; overload;
+    function id(Value: LargeInt): iPessoa_foto_base64; overload;
+    function id: LargeInt; overload;
 
-    function id_pessoa (Value : Integer) : iPessoa_foto_base64; overload;
-    function id_pessoa : Integer; overload;
+    function id_pessoa(Value: LargeInt): iPessoa_foto_base64; overload;
+    function id_pessoa: LargeInt; overload;
 
-    function foto_base64 (Value : string   {261}) : iPessoa_foto_base64; overload;
-    function foto_base64 : string   {261}; overload;
+    function foto_base64(Value: String): iPessoa_foto_base64; overload;
+    function foto_base64: String; overload;
 
-    function Select(out erro : string) : TFDquery; overload;
-    function Insert(out erro : String) : iPessoa_foto_base64; overload;
-    function Update(out erro : String) : iPessoa_foto_base64; overload;
-    function Delete(out erro : String) : iPessoa_foto_base64; overload;
-
+    function Select(out Erro: string; const Filtros, Include: TJSONObject): TJSONObject; overload;
+    function Insert(out Erro: String): iPessoa_foto_base64; overload;
+    function Update(out Erro: String): iPessoa_foto_base64; overload;
+    function Delete(out Erro: String): iPessoa_foto_base64; overload;
     function &End : iPessoa_foto_base64;
-
   end;
 
 implementation

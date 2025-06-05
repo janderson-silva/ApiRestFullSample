@@ -35,10 +35,10 @@ type
     function senha(Value: String): iLogin; overload;
     function senha: String; overload;
 
-    function Select(out Erro: string; const Filtros, Include: TJSONObject): TJSONObject; overload;
-    function Insert(out Erro: String): iLogin; overload;
-    function Update(out Erro: String): iLogin; overload;
-    function Delete(out Erro: String): iLogin; overload;
+    function Select: TJSONObject; overload;
+    function Insert(OnMessage: Boolean): String; overload;
+    function Update(OnMessage: Boolean): String; overload;
+    function Delete(OnMessage: Boolean): String; overload;
     function &End : iLogin;
   end;
 
