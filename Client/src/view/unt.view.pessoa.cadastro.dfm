@@ -1,6 +1,7 @@
 object frmPessoaCadastro: TfrmPessoaCadastro
   Left = 0
   Top = 0
+  Margins.Right = 15
   BorderStyle = bsSingle
   Caption = 'frmPessoaCadastro'
   ClientHeight = 311
