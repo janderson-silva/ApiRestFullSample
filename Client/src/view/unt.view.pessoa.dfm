@@ -4,25 +4,25 @@ object frmPessoa: TfrmPessoa
   BorderStyle = bsSingle
   Caption = 'frmPessoa'
   ClientHeight = 441
-  ClientWidth = 777
+  ClientWidth = 964
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  Position = poOwnerFormCenter
   TextHeight = 15
   object pnlButton: TPanel
     Left = 0
     Top = 401
-    Width = 777
+    Width = 964
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
     ExplicitLeft = -340
-    ExplicitWidth = 964
     object pnlNovo: TPanel
       AlignWithMargins = True
       Left = 3
@@ -93,14 +93,13 @@ object frmPessoa: TfrmPessoa
     AlignWithMargins = True
     Left = 3
     Top = 3
-    Width = 771
+    Width = 958
     Height = 75
     Align = alTop
     BevelInner = bvLowered
     ParentColor = True
     TabOrder = 1
     ExplicitLeft = -181
-    ExplicitWidth = 958
     object pnlFiltrar: TPanel
       AlignWithMargins = True
       Left = 17
@@ -133,7 +132,7 @@ object frmPessoa: TfrmPessoa
     AlignWithMargins = True
     Left = 3
     Top = 84
-    Width = 771
+    Width = 958
     Height = 314
     Align = alClient
     DataSource = dsPessoa

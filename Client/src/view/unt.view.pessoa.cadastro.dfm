@@ -3,19 +3,20 @@ object frmPessoaCadastro: TfrmPessoaCadastro
   Top = 0
   BorderStyle = bsSingle
   Caption = 'frmPessoaCadastro'
-  ClientHeight = 315
-  ClientWidth = 826
+  ClientHeight = 311
+  ClientWidth = 784
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  Position = poOwnerFormCenter
   TextHeight = 15
   object pnlButton: TPanel
     Left = 0
-    Top = 275
-    Width = 826
+    Top = 271
+    Width = 784
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -69,10 +70,13 @@ object frmPessoaCadastro: TfrmPessoaCadastro
     end
   end
   object pnlDados: TPanel
-    Left = 420
-    Top = 0
-    Width = 406
-    Height = 275
+    AlignWithMargins = True
+    Left = 410
+    Top = 3
+    Width = 359
+    Height = 265
+    Margins.Left = 0
+    Margins.Right = 15
     Align = alClient
     BevelOuter = bvNone
     ParentColor = True
@@ -85,7 +89,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
       AlignWithMargins = True
       Left = 3
       Top = 74
-      Width = 400
+      Width = 353
       Height = 15
       Margins.Top = 15
       Margins.Bottom = 0
@@ -99,7 +103,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
       AlignWithMargins = True
       Left = 3
       Top = 15
-      Width = 400
+      Width = 353
       Height = 15
       Margins.Top = 15
       Margins.Bottom = 0
@@ -113,7 +117,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
       AlignWithMargins = True
       Left = 3
       Top = 92
-      Width = 400
+      Width = 353
       Height = 23
       Align = alTop
       TabOrder = 1
@@ -125,7 +129,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
       AlignWithMargins = True
       Left = 3
       Top = 33
-      Width = 400
+      Width = 353
       Height = 23
       Align = alTop
       TabOrder = 0
@@ -137,7 +141,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
       AlignWithMargins = True
       Left = 3
       Top = 133
-      Width = 400
+      Width = 353
       Height = 17
       Margins.Top = 15
       Align = alTop
@@ -153,7 +157,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
     Left = 10
     Top = 3
     Width = 185
-    Height = 269
+    Height = 265
     Margins.Left = 10
     Margins.Right = 15
     Align = alLeft
@@ -335,11 +339,11 @@ object frmPessoaCadastro: TfrmPessoaCadastro
   end
   object Panel1: TPanel
     AlignWithMargins = True
-    Left = 220
+    Left = 210
     Top = 3
     Width = 185
-    Height = 269
-    Margins.Left = 10
+    Height = 265
+    Margins.Left = 0
     Margins.Right = 15
     Align = alLeft
     BevelOuter = bvNone
