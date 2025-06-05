@@ -83,6 +83,7 @@ begin
     JSONArrayPessoa := JSONObject.GetValue<TJSONArray>('pessoa');
     try
       FDMemTablePessoa.Open;
+      FDMemTablePessoa.EmptyDataSet;
       for i := 0 to JSONArrayPessoa.Count - 1 do
       begin
         FDMemTablePessoa.Append;

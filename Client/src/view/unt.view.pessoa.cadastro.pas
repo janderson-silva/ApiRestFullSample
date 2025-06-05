@@ -131,7 +131,6 @@ var
   FPessoa: iPessoa;
   JSONObject: TJSONObject;
   JSONArrayPessoa: TJSONArray;
-  i: Integer;
 begin
   FPessoa := TPessoa.New;
   try
@@ -141,16 +140,9 @@ begin
 
     JSONArrayPessoa := JSONObject.GetValue<TJSONArray>('pessoa');
     try
-      FDMemTablePessoa.Open;
-      for i := 0 to JSONArrayPessoa.Count - 1 do
-      begin
-        FDMemTablePessoa.Append;
-        FDMemTablePessoa.FieldByName('id').AsInteger := JSONArrayPessoa[i].GetValue<Integer>('id', 0);
-        FDMemTablePessoa.FieldByName('ativo').AsBoolean := JSONArrayPessoa[i].GetValue<Boolean>('ativo', False);
-        FDMemTablePessoa.FieldByName('nome').AsString := JSONArrayPessoa[i].GetValue<string>('nome', '');
-        FDMemTablePessoa.FieldByName('documento').AsString := JSONArrayPessoa[i].GetValue<string>('documento', '');
-        FDMemTablePessoa.Post;
-      end;
+      chkAtivo.Checked := JSONArrayPessoa[0].GetValue<Boolean>('ativo', False);
+      edtNome.Text := JSONArrayPessoa[0].GetValue<string>('nome', '');
+      edtDocumento.Text := JSONArrayPessoa[0].GetValue<string>('documento', '');
     finally
       JSONObject.Free;
     end;
