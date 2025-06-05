@@ -16,7 +16,8 @@ uses
   model.token in 'src\model\model.token.pas',
   unt.view.login in 'src\view\unt.view.login.pas' {Form2},
   unt.view.pessoa.cadastro in 'src\view\unt.view.pessoa.cadastro.pas' {frmPessoaCadastro},
-  unt.view.pessoa in 'src\view\unt.view.pessoa.pas' {frmPessoa};
+  unt.view.pessoa in 'src\view\unt.view.pessoa.pas' {frmPessoa},
+  Base64.util in 'src\util\Base64.util.pas';
 
 {$R *.res}
 

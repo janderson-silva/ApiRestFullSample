@@ -3,6 +3,7 @@ unit unt.view.pessoa.cadastro;
 interface
 
 uses
+  Base64.util,
   Data.DB,
   FireDAC.Comp.Client,
   FireDAC.Comp.DataSet,
@@ -14,6 +15,7 @@ uses
   FireDAC.Stan.Option,
   FireDAC.Stan.Param,
   System.Classes,
+  System.JSON,
   System.SysUtils,
   System.Variants,
   Vcl.Controls,
@@ -25,9 +27,12 @@ uses
   Vcl.StdCtrls,
   Winapi.Messages,
   Winapi.Windows,
-  System.JSON,
   interfaces.pessoa,
-  model.pessoa;
+  model.pessoa,
+  interfaces.pessoa_foto_base64,
+  model.pessoa_foto_base64,
+  interfaces.pessoa_foto_binary,
+  model.pessoa_foto_binary;
 
 type
   TfrmPessoaCadastro = class(TForm)
@@ -65,15 +70,26 @@ type
     FDMemTablePessoaativo: TBooleanField;
     FDMemTablePessoanome: TStringField;
     FDMemTablePessoadocumento: TStringField;
+    OpenImage: TOpenDialog;
     procedure pnlSalvarClick(Sender: TObject);
+    procedure pnlAddFotoBase64Click(Sender: TObject);
+    procedure pnlAddFotoBinaryClick(Sender: TObject);
+    procedure imgFotoBase64DblClick(Sender: TObject);
   private
     { Private declarations }
     var FID_PESSOA: Integer;
 
+    //pessoa
     procedure CarregarPessoa;
     procedure ThreadPessoaTerminate(Sender: TObject);
     procedure CadastrarPessoa;
     procedure AtualizarPessoa;
+
+    //foto Base64
+    procedure CadastrarFotoBase64;
+
+    //foto Base64
+    procedure CadastrarFotoBinary;
   public
     { Public declarations }
     procedure IniciarTela(AID_PESSOA: Integer);
@@ -106,6 +122,33 @@ begin
       Exit;
     end;
   end;
+end;
+
+procedure TfrmPessoaCadastro.CadastrarFotoBase64;
+var
+  FPessoaFotoBase64: iPessoa_foto_base64;
+begin
+  if FID_PESSOA = 0 then
+    raise Exception.Create('O cadastro de pessoa deve ser salvo antes de enviar a foto');
+
+  FPessoaFotoBase64 := TPessoa_foto_base64.New;
+  try
+    FPessoaFotoBase64
+        .id_pessoa(FID_PESSOA)
+        .foto_base64(BitmapToBase64(imgFotoBase64.Picture))
+      .Insert(True);
+  except on E : Exception do
+    begin
+      raise Exception.Create(E.Message);
+      Exit;
+    end;
+  end;
+end;
+
+procedure TfrmPessoaCadastro.CadastrarFotoBinary;
+begin
+  if FID_PESSOA = 0 then
+    raise Exception.Create('O cadastro de pessoa deve ser salvo antes de enviar a foto');
 end;
 
 procedure TfrmPessoaCadastro.CadastrarPessoa;
@@ -171,11 +214,29 @@ begin
   t.Start;
 end;
 
+procedure TfrmPessoaCadastro.imgFotoBase64DblClick(Sender: TObject);
+begin
+  if OpenImage.Execute then
+  begin
+    imgFotoBase64.Picture.LoadFromFile(OpenImage.FileName);
+  end;
+end;
+
 procedure TfrmPessoaCadastro.IniciarTela(AID_PESSOA: Integer);
 begin
   FID_PESSOA := AID_PESSOA;
   if FID_PESSOA > 0 then
     CarregarPessoa;
+end;
+
+procedure TfrmPessoaCadastro.pnlAddFotoBase64Click(Sender: TObject);
+begin
+  CadastrarFotoBase64;
+end;
+
+procedure TfrmPessoaCadastro.pnlAddFotoBinaryClick(Sender: TObject);
+begin
+  CadastrarFotoBinary;
 end;
 
 procedure TfrmPessoaCadastro.pnlSalvarClick(Sender: TObject);

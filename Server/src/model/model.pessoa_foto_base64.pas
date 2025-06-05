@@ -156,7 +156,9 @@ begin
       qry.SQL.Add(')');
       qry.SQL.Add('returning id;');
       qry.ParamByName('id_pessoa').AsLargeInt:= Fid_pessoa;
-      qry.ParamByName('foto_base64').AsString:= Ffoto_base64;
+      qry.ParamByName('foto_base64').DataType := ftWideMemo;
+      qry.ParamByName('foto_base64').Size := 0;
+      qry.ParamByName('foto_base64').AsWideMemo := Ffoto_base64;
 
       {Aqui, a parte RETURNING id é uma característica de alguns bancos de dados,
       como PostgreSQL, que permite retornar o valor de uma coluna após a inserção.
@@ -197,7 +199,9 @@ begin
       qry.SQL.Add('WHERE id = :id');
       qry.ParamByName('id').AsLargeInt:= Fid;
       qry.ParamByName('id_pessoa').AsLargeInt:= Fid_pessoa;
-      qry.ParamByName('foto_base64').AsString:= Ffoto_base64;
+      qry.ParamByName('foto_base64').DataType := ftWideMemo;
+      qry.ParamByName('foto_base64').Size := 0;
+      qry.ParamByName('foto_base64').AsWideMemo := Ffoto_base64;
       qry.ExecSQL;
     except
       on E: Exception do

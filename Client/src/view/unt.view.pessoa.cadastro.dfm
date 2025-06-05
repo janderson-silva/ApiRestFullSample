@@ -22,9 +22,6 @@ object frmPessoaCadastro: TfrmPessoaCadastro
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
-    ExplicitLeft = -345
-    ExplicitTop = 401
-    ExplicitWidth = 969
     object pnlSalvar: TPanel
       AlignWithMargins = True
       Left = 3
@@ -81,10 +78,6 @@ object frmPessoaCadastro: TfrmPessoaCadastro
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 1
-    ExplicitLeft = 213
-    ExplicitTop = -3
-    ExplicitWidth = 414
-    ExplicitHeight = 516
     object Label1: TLabel
       AlignWithMargins = True
       Left = 3
@@ -95,8 +88,6 @@ object frmPessoaCadastro: TfrmPessoaCadastro
       Margins.Bottom = 0
       Align = alTop
       Caption = 'Documento'
-      ExplicitLeft = 0
-      ExplicitTop = 38
       ExplicitWidth = 63
     end
     object Label2: TLabel
@@ -109,8 +100,6 @@ object frmPessoaCadastro: TfrmPessoaCadastro
       Margins.Bottom = 0
       Align = alTop
       Caption = 'Nome'
-      ExplicitLeft = 0
-      ExplicitTop = 0
       ExplicitWidth = 33
     end
     object edtDocumento: TEdit
@@ -121,9 +110,6 @@ object frmPessoaCadastro: TfrmPessoaCadastro
       Height = 23
       Align = alTop
       TabOrder = 1
-      ExplicitLeft = 80
-      ExplicitTop = 56
-      ExplicitWidth = 121
     end
     object edtNome: TEdit
       AlignWithMargins = True
@@ -133,9 +119,6 @@ object frmPessoaCadastro: TfrmPessoaCadastro
       Height = 23
       Align = alTop
       TabOrder = 0
-      ExplicitLeft = 80
-      ExplicitTop = 56
-      ExplicitWidth = 121
     end
     object chkAtivo: TCheckBox
       AlignWithMargins = True
@@ -147,9 +130,6 @@ object frmPessoaCadastro: TfrmPessoaCadastro
       Align = alTop
       Caption = 'Ativo'
       TabOrder = 2
-      ExplicitLeft = 40
-      ExplicitTop = 96
-      ExplicitWidth = 97
     end
   end
   object pnlLeftFoto: TPanel
@@ -164,7 +144,6 @@ object frmPessoaCadastro: TfrmPessoaCadastro
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 2
-    ExplicitHeight = 515
     object pnlFotoBase64: TPanel
       AlignWithMargins = True
       Left = 3
@@ -189,7 +168,6 @@ object frmPessoaCadastro: TfrmPessoaCadastro
         BevelInner = bvLowered
         ParentColor = True
         TabOrder = 0
-        ExplicitHeight = 171
         object imgFotoBase64: TImage
           Left = 2
           Top = 2
@@ -199,6 +177,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
           Center = True
           IncrementalDisplay = True
           Proportional = True
+          OnDblClick = imgFotoBase64DblClick
           ExplicitLeft = 4
           ExplicitTop = 4
           ExplicitHeight = 167
@@ -219,7 +198,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
         BevelInner = bvLowered
         ParentColor = True
         TabOrder = 1
-        ExplicitTop = 9
+        OnClick = pnlAddFotoBase64Click
         object imgAddFotoBase64: TImage
           AlignWithMargins = True
           Left = 12
@@ -247,6 +226,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
             1B6E6B099F2BCBBD2A53A9E554549B7F140EEEC9A2F27F08DDE3CA1636A7845D
             CF03ECA9F0276D0D2FA3DD33FC8C355758CFACBCE1D5E30065145CE175153E1F
             7CE61BB958FF9A62995F085C569D890BC5420000000049454E44AE426082}
+          OnClick = pnlAddFotoBase64Click
           ExplicitLeft = 5
           ExplicitTop = 5
           ExplicitHeight = 22
@@ -265,6 +245,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
           Align = alClient
           Caption = 'Enviar Arquivo Base64'
           Layout = tlCenter
+          OnClick = pnlAddFotoBase64Click
           ExplicitWidth = 116
           ExplicitHeight = 15
         end
@@ -284,7 +265,6 @@ object frmPessoaCadastro: TfrmPessoaCadastro
         BevelInner = bvLowered
         ParentColor = True
         TabOrder = 2
-        ExplicitTop = 65
         object imgDelFotoBase64: TImage
           AlignWithMargins = True
           Left = 12
@@ -349,9 +329,6 @@ object frmPessoaCadastro: TfrmPessoaCadastro
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 3
-    ExplicitLeft = 18
-    ExplicitTop = 11
-    ExplicitHeight = 510
     object pnlFotoBinary: TPanel
       AlignWithMargins = True
       Left = 3
@@ -362,8 +339,6 @@ object frmPessoaCadastro: TfrmPessoaCadastro
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 0
-      ExplicitLeft = 6
-      ExplicitTop = 11
       object pnlFotoBinaryTImage: TPanel
         AlignWithMargins = True
         Left = 0
@@ -407,6 +382,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
         BevelInner = bvLowered
         ParentColor = True
         TabOrder = 1
+        OnClick = pnlAddFotoBinaryClick
         object imgAddFotoBinary: TImage
           AlignWithMargins = True
           Left = 12
@@ -434,6 +410,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
             1B6E6B099F2BCBBD2A53A9E554549B7F140EEEC9A2F27F08DDE3CA1636A7845D
             CF03ECA9F0276D0D2FA3DD33FC8C355758CFACBCE1D5E30065145CE175153E1F
             7CE61BB958FF9A62995F085C569D890BC5420000000049454E44AE426082}
+          OnClick = pnlAddFotoBinaryClick
           ExplicitLeft = 5
           ExplicitTop = 5
           ExplicitHeight = 22
@@ -452,6 +429,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
           Align = alClient
           Caption = 'Enviar Arquivo Binary'
           Layout = tlCenter
+          OnClick = pnlAddFotoBinaryClick
           ExplicitWidth = 113
           ExplicitHeight = 15
         end
@@ -547,5 +525,9 @@ object frmPessoaCadastro: TfrmPessoaCadastro
       FieldName = 'documento'
       Size = 60
     end
+  end
+  object OpenImage: TOpenDialog
+    Left = 570
+    Top = 179
   end
 end
