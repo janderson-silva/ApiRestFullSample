@@ -12,7 +12,8 @@ object frmLogin: TfrmLogin
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
-  Position = poOwnerFormCenter
+  Position = poScreenCenter
+  OnKeyDown = FormKeyDown
   TextHeight = 15
   object pnlDados: TPanel
     AlignWithMargins = True

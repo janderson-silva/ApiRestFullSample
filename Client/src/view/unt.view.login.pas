@@ -29,6 +29,7 @@ type
     pnlButton: TPanel;
     pnlLogin: TPanel;
     procedure pnlLoginClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
     procedure CarregarLogin;
@@ -76,6 +77,17 @@ begin
       raise Exception.Create(E.Message);
       Exit;
     end;
+  end;
+end;
+
+procedure TfrmLogin.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  // Verifica se a tecla F4 foi pressionada com a tecla Alt
+  if (Key = VK_F4) and (ssAlt in Shift) then
+  begin
+    // Encerra totalmente o sistema
+    Application.Terminate;
   end;
 end;
 
