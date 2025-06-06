@@ -28,8 +28,10 @@ type
     edtEmail: TEdit;
     pnlButton: TPanel;
     pnlLogin: TPanel;
+    pnlNovoCadastro: TPanel;
     procedure pnlLoginClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure pnlNovoCadastroClick(Sender: TObject);
   private
     { Private declarations }
     procedure CarregarLogin;
@@ -41,6 +43,9 @@ var
   frmLogin: TfrmLogin;
 
 implementation
+
+uses
+  unt.view.login.cadastro;
 
 {$R *.dfm}
 
@@ -94,6 +99,17 @@ end;
 procedure TfrmLogin.pnlLoginClick(Sender: TObject);
 begin
   CarregarLogin;
+end;
+
+procedure TfrmLogin.pnlNovoCadastroClick(Sender: TObject);
+begin
+  frmLoginCadastro := TfrmLoginCadastro.Create(Self);
+  try
+    frmLoginCadastro.IniciarTela(0);
+    frmLoginCadastro.ShowModal;
+  finally
+    FreeAndNil(frmLoginCadastro);
+  end;
 end;
 
 end.

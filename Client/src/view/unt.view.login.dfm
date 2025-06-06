@@ -105,5 +105,28 @@ object frmLogin: TfrmLogin
       StyleElements = []
       OnClick = pnlLoginClick
     end
+    object pnlNovoCadastro: TPanel
+      AlignWithMargins = True
+      Left = 361
+      Top = 3
+      Width = 120
+      Height = 34
+      Cursor = crHandPoint
+      Align = alRight
+      BevelOuter = bvNone
+      Caption = 'Novo Cadastro (F3)'
+      Color = 5540912
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -13
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentBackground = False
+      ParentFont = False
+      TabOrder = 1
+      StyleElements = []
+      OnClick = pnlNovoCadastroClick
+      ExplicitLeft = 3
+    end
   end
 end
