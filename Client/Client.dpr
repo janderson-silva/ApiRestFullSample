@@ -19,13 +19,16 @@ uses
   unt.view.pessoa.lista in 'src\view\unt.view.pessoa.lista.pas' {frmPessoaLista},
   Base64.util in 'src\util\Base64.util.pas',
   unt.view.login.cadastro in 'src\view\unt.view.login.cadastro.pas' {frmLoginCadastro},
-  unt.view.login.lista in 'src\view\unt.view.login.lista.pas' {frmLoginLista};
+  unt.view.login.lista in 'src\view\unt.view.login.lista.pas' {frmLoginLista},
+  Vcl.Themes,
+  Vcl.Styles;
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
+  TStyleManager.TrySetStyle('Onyx Blue');
   Application.CreateForm(TfrmPrincipal, frmPrincipal);
   Application.Run;
 end.
