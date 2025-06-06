@@ -1,4 +1,4 @@
-unit unt.view.pessoa;
+unit unt.view.pessoa.lista;
 
 interface
 
@@ -30,7 +30,7 @@ uses
   model.pessoa;
 
 type
-  TfrmPessoa = class(TForm)
+  TfrmPessoaLista = class(TForm)
     pnlButton: TPanel;
     pnlNovo: TPanel;
     pnlEditar: TPanel;
@@ -47,16 +47,18 @@ type
     procedure pnlFiltrarClick(Sender: TObject);
     procedure pnlNovoClick(Sender: TObject);
     procedure pnlEditarClick(Sender: TObject);
+    procedure pnlExcluirClick(Sender: TObject);
   private
     { Private declarations }
     procedure CarregarPessoa;
     procedure ThreadPessoaTerminate(Sender: TObject);
+    procedure ExcluirPessoa;
   public
     { Public declarations }
   end;
 
 var
-  frmPessoa: TfrmPessoa;
+  frmPessoaLista: TfrmPessoaLista;
 
 implementation
 
@@ -67,7 +69,7 @@ uses
 
 { TfrmPessoa }
 
-procedure TfrmPessoa.CarregarPessoa;
+procedure TfrmPessoaLista.CarregarPessoa;
 var
   FPessoa: iPessoa;
   JSONObject: TJSONObject;
@@ -120,8 +122,28 @@ begin
   t.Start;
 end;
 
-procedure TfrmPessoa.pnlEditarClick(Sender: TObject);
+procedure TfrmPessoaLista.ExcluirPessoa;
+var
+  FPessoa: iPessoa;
 begin
+  FPessoa := TPessoa.New;
+  try
+    FPessoa
+        .id(FDMemTablePessoa.FieldByName('id').AsInteger)
+      .Delete(True);
+  except on E : Exception do
+    begin
+      raise Exception.Create(E.Message);
+      Exit;
+    end;
+  end;
+end;
+
+procedure TfrmPessoaLista.pnlEditarClick(Sender: TObject);
+begin
+  if FDMemTablePessoa.IsEmpty then
+    raise Exception.Create('Nenhuma pessoa na lista.');
+
   frmPessoaCadastro := TfrmPessoaCadastro.Create(Self);
   try
     frmPessoaCadastro.IniciarTela(FDMemTablePessoa.FieldByName('id').AsInteger);
@@ -131,12 +153,20 @@ begin
   end;
 end;
 
-procedure TfrmPessoa.pnlFiltrarClick(Sender: TObject);
+procedure TfrmPessoaLista.pnlExcluirClick(Sender: TObject);
+begin
+  if FDMemTablePessoa.IsEmpty then
+    raise Exception.Create('Nenhuma pessoa na lista.');
+
+  ExcluirPessoa;
+end;
+
+procedure TfrmPessoaLista.pnlFiltrarClick(Sender: TObject);
 begin
   CarregarPessoa;
 end;
 
-procedure TfrmPessoa.pnlNovoClick(Sender: TObject);
+procedure TfrmPessoaLista.pnlNovoClick(Sender: TObject);
 begin
   frmPessoaCadastro := TfrmPessoaCadastro.Create(Self);
   try
@@ -147,7 +177,7 @@ begin
   end;
 end;
 
-procedure TfrmPessoa.ThreadPessoaTerminate(Sender: TObject);
+procedure TfrmPessoaLista.ThreadPessoaTerminate(Sender: TObject);
 begin
   if Sender is TThread then
   begin

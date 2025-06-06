@@ -150,13 +150,17 @@
             <Form>frmPessoaCadastro</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="src\view\unt.view.pessoa.pas">
-            <Form>frmPessoa</Form>
+        <DCCReference Include="src\view\unt.view.pessoa.lista.pas">
+            <Form>frmPessoaLista</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="src\util\Base64.util.pas"/>
         <DCCReference Include="src\view\unt.view.login.cadastro.pas">
             <Form>frmLoginCadastro</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="src\view\unt.view.login.lista.pas">
+            <Form>frmLoginLista</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Base">

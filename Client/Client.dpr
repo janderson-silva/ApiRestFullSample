@@ -16,15 +16,16 @@ uses
   model.token in 'src\model\model.token.pas',
   unt.view.login in 'src\view\unt.view.login.pas' {frmLogin},
   unt.view.pessoa.cadastro in 'src\view\unt.view.pessoa.cadastro.pas' {frmPessoaCadastro},
-  unt.view.pessoa in 'src\view\unt.view.pessoa.pas' {frmPessoa},
+  unt.view.pessoa.lista in 'src\view\unt.view.pessoa.lista.pas' {frmPessoaLista},
   Base64.util in 'src\util\Base64.util.pas',
-  unt.view.login.cadastro in 'src\view\unt.view.login.cadastro.pas' {frmLoginCadastro};
+  unt.view.login.cadastro in 'src\view\unt.view.login.cadastro.pas' {frmLoginCadastro},
+  unt.view.login.lista in 'src\view\unt.view.login.lista.pas' {frmLoginLista};
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TfrmPessoa, frmPessoa);
+  Application.CreateForm(TfrmLoginLista, frmLoginLista);
   Application.Run;
 end.

@@ -3,8 +3,21 @@ unit unt.view.login.cadastro;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls;
+  BCrypt,
+  System.Classes,
+  System.JSON,
+  System.SysUtils,
+  System.Variants,
+  Vcl.Controls,
+  Vcl.Dialogs,
+  Vcl.ExtCtrls,
+  Vcl.Forms,
+  Vcl.Graphics,
+  Vcl.StdCtrls,
+  Winapi.Messages,
+  Winapi.Windows,
+  interfaces.login,
+  model.login;
 
 type
   TfrmLoginCadastro = class(TForm)
@@ -17,10 +30,17 @@ type
     edtSenha: TEdit;
     edtEmail: TEdit;
     chkAtivo: TCheckBox;
+    procedure pnlSalvarClick(Sender: TObject);
   private
     { Private declarations }
+    var FID_LOGIN: Integer;
+    procedure CarregarLogin;
+    procedure ThreadLoginTerminate(Sender: TObject);
+    procedure CadastrarLogin;
+    procedure AtualizarLogin;
   public
     { Public declarations }
+    procedure IniciarTela(AID_LOGIN: Integer);
   end;
 
 var
@@ -29,5 +49,117 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TfrmLoginCadastro.AtualizarLogin;
+var
+  FLogin: iLogin;
+begin
+  FLogin := TLogin.New;
+  try
+    FLogin
+        .id(FID_LOGIN)
+        .ativo(chkAtivo.Checked)
+        .email(edtEmail.Text)
+        .senha(TBCrypt.GenerateHash(edtSenha.Text))
+      .Update(True)
+  except on E : Exception do
+    begin
+      raise Exception.Create(E.Message);
+      Exit;
+    end;
+  end;
+end;
+
+procedure TfrmLoginCadastro.CadastrarLogin;
+var
+  FLogin: iLogin;
+begin
+  FLogin := TLogin.New;
+  try
+    FLogin
+        .ativo(chkAtivo.Checked)
+        .email(edtEmail.Text)
+        .senha(TBCrypt.GenerateHash(edtSenha.Text))
+      .Insert(True)
+  except on E : Exception do
+    begin
+      raise Exception.Create(E.Message);
+      Exit;
+    end;
+  end;
+end;
+
+procedure TfrmLoginCadastro.CarregarLogin;
+var
+  FLogin: iLogin;
+  JSONObject: TJSONObject;
+  JSONArrayPessoa: TJSONArray;
+  t: TThread;
+begin
+  t := TThread.CreateAnonymousThread(procedure
+  begin
+
+    FLogin := TLogin.New;
+    try
+
+      TThread.Synchronize(nil, procedure
+      begin
+
+        JSONObject := FLogin
+                          .id(FID_LOGIN)
+                        .Select;
+
+        JSONArrayPessoa := JSONObject.GetValue<TJSONArray>('login');
+        try
+          chkAtivo.Checked := JSONArrayPessoa[0].GetValue<Boolean>('ativo', False);
+          edtEmail.Text := JSONArrayPessoa[0].GetValue<string>('email', '');
+          edtSenha.Text := JSONArrayPessoa[0].GetValue<string>('senha', '');
+        finally
+          JSONObject.Free;
+        end;
+
+      end);
+
+    except on E : Exception do
+      begin
+        raise Exception.Create(E.Message);
+        Exit;
+      end;
+    end;
+
+  end);
+
+  t.OnTerminate := ThreadLoginTerminate;
+  t.Start;
+end;
+
+procedure TfrmLoginCadastro.IniciarTela(AID_LOGIN: Integer);
+begin
+  FID_LOGIN := AID_LOGIN;
+  if FID_LOGIN > 0 then
+    CarregarLogin;
+end;
+
+procedure TfrmLoginCadastro.pnlSalvarClick(Sender: TObject);
+begin
+  if FID_LOGIN > 0 then
+    AtualizarLogin
+  else
+    CadastrarLogin;
+
+  Close;
+end;
+
+procedure TfrmLoginCadastro.ThreadLoginTerminate(Sender: TObject);
+begin
+  if Sender is TThread then
+  begin
+      if Assigned(TThread(Sender).FatalException) then
+      begin
+          showmessage(Exception(TThread(sender).FatalException).Message);
+          exit;
+      end;
+  end;
+end;
 
 end.

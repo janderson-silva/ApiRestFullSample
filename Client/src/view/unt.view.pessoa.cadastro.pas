@@ -70,6 +70,7 @@ type
     procedure pnlAddFotoBinaryClick(Sender: TObject);
     procedure imgFotoBase64DblClick(Sender: TObject);
     procedure imgFotoBinaryDblClick(Sender: TObject);
+    procedure pnlCancelarClick(Sender: TObject);
   private
     { Private declarations }
     var FID_PESSOA: Integer;
@@ -266,6 +267,12 @@ end;
 procedure TfrmPessoaCadastro.pnlAddFotoBinaryClick(Sender: TObject);
 begin
   CadastrarFotoBinary;
+end;
+
+procedure TfrmPessoaCadastro.pnlCancelarClick(Sender: TObject);
+begin
+  if Application.MessageBox('Deseja mesmo cancelar?','Confirmação',MB_YESNO+MB_ICONQUESTION) = ID_YES then
+    Close;
 end;
 
 procedure TfrmPessoaCadastro.pnlSalvarClick(Sender: TObject);

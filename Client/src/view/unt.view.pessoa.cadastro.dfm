@@ -65,6 +65,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
       ParentFont = False
       TabOrder = 1
       StyleElements = []
+      OnClick = pnlCancelarClick
     end
   end
   object pnlDados: TPanel

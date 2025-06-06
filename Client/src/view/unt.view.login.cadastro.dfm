@@ -23,9 +23,6 @@ object frmLoginCadastro: TfrmLoginCadastro
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
-    ExplicitLeft = -160
-    ExplicitTop = 271
-    ExplicitWidth = 784
     object pnlSalvar: TPanel
       AlignWithMargins = True
       Left = 3
@@ -46,6 +43,7 @@ object frmLoginCadastro: TfrmLoginCadastro
       ParentFont = False
       TabOrder = 0
       StyleElements = []
+      OnClick = pnlSalvarClick
     end
     object pnlCancelar: TPanel
       AlignWithMargins = True
@@ -71,24 +69,21 @@ object frmLoginCadastro: TfrmLoginCadastro
   end
   object pnlDados: TPanel
     AlignWithMargins = True
-    Left = 0
+    Left = 15
     Top = 3
-    Width = 469
+    Width = 454
     Height = 160
-    Margins.Left = 0
+    Margins.Left = 15
     Margins.Right = 15
     Align = alClient
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 1
-    ExplicitLeft = 265
-    ExplicitWidth = 359
-    ExplicitHeight = 265
     object Label1: TLabel
       AlignWithMargins = True
       Left = 3
       Top = 74
-      Width = 463
+      Width = 448
       Height = 15
       Margins.Top = 15
       Margins.Bottom = 0
@@ -100,7 +95,7 @@ object frmLoginCadastro: TfrmLoginCadastro
       AlignWithMargins = True
       Left = 3
       Top = 15
-      Width = 463
+      Width = 448
       Height = 15
       Margins.Top = 15
       Margins.Bottom = 0
@@ -112,33 +107,30 @@ object frmLoginCadastro: TfrmLoginCadastro
       AlignWithMargins = True
       Left = 3
       Top = 92
-      Width = 463
+      Width = 448
       Height = 23
       Align = alTop
       TabOrder = 1
-      ExplicitWidth = 353
     end
     object edtEmail: TEdit
       AlignWithMargins = True
       Left = 3
       Top = 33
-      Width = 463
+      Width = 448
       Height = 23
       Align = alTop
       TabOrder = 0
-      ExplicitWidth = 353
     end
     object chkAtivo: TCheckBox
       AlignWithMargins = True
       Left = 3
       Top = 133
-      Width = 463
+      Width = 448
       Height = 17
       Margins.Top = 15
       Align = alTop
       Caption = 'Ativo'
       TabOrder = 2
-      ExplicitWidth = 353
     end
   end
 end

@@ -1,9 +1,9 @@
-object frmPessoa: TfrmPessoa
+object frmPessoaLista: TfrmPessoaLista
   Left = 0
   Top = 0
   BorderIcons = [biSystemMenu, biMaximize]
   BorderStyle = bsSingle
-  Caption = 'frmPessoa'
+  Caption = 'frmPessoaLista'
   ClientHeight = 441
   ClientWidth = 964
   Color = clWhite
@@ -87,6 +87,7 @@ object frmPessoa: TfrmPessoa
       ParentFont = False
       TabOrder = 2
       StyleElements = []
+      OnClick = pnlExcluirClick
     end
   end
   object pnlFiltro: TPanel
