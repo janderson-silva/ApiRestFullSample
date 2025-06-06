@@ -1,20 +1,22 @@
-unit unt.view.login;
+unit unt.view.login.cadastro;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls;
 
 type
-  TfrmLogin = class(TForm)
+  TfrmLoginCadastro = class(TForm)
+    pnlButton: TPanel;
+    pnlSalvar: TPanel;
+    pnlCancelar: TPanel;
     pnlDados: TPanel;
     Label1: TLabel;
     Label2: TLabel;
     edtSenha: TEdit;
     edtEmail: TEdit;
-    pnlButton: TPanel;
-    pnlLogin: TPanel;
+    chkAtivo: TCheckBox;
   private
     { Private declarations }
   public
@@ -22,7 +24,7 @@ type
   end;
 
 var
-  frmLogin: TfrmLogin;
+  frmLoginCadastro: TfrmLoginCadastro;
 
 implementation
 

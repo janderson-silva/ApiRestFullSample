@@ -1,6 +1,7 @@
 object frmPessoa: TfrmPessoa
   Left = 0
   Top = 0
+  BorderIcons = [biSystemMenu, biMaximize]
   BorderStyle = bsSingle
   Caption = 'frmPessoa'
   ClientHeight = 441
@@ -22,7 +23,6 @@ object frmPessoa: TfrmPessoa
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
-    ExplicitLeft = -340
     object pnlNovo: TPanel
       AlignWithMargins = True
       Left = 3
@@ -99,7 +99,6 @@ object frmPessoa: TfrmPessoa
     BevelInner = bvLowered
     ParentColor = True
     TabOrder = 1
-    ExplicitLeft = -181
     object pnlFiltrar: TPanel
       AlignWithMargins = True
       Left = 17
@@ -125,7 +124,6 @@ object frmPessoa: TfrmPessoa
       TabOrder = 0
       StyleElements = []
       OnClick = pnlFiltrarClick
-      ExplicitLeft = 826
     end
   end
   object DBGridPessoa: TDBGrid

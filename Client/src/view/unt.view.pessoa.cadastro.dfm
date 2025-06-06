@@ -1,6 +1,7 @@
 object frmPessoaCadastro: TfrmPessoaCadastro
   Left = 0
   Top = 0
+  BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'frmPessoaCadastro'
   ClientHeight = 311
@@ -159,7 +160,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
         Left = 0
         Top = 1
         Width = 179
-        Height = 184
+        Height = 216
         Margins.Left = 0
         Margins.Top = 1
         Margins.Right = 0
@@ -172,7 +173,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
           Left = 2
           Top = 2
           Width = 175
-          Height = 180
+          Height = 212
           Align = alClient
           Center = True
           IncrementalDisplay = True
@@ -186,7 +187,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
       object pnlAddFotoBase64: TPanel
         AlignWithMargins = True
         Left = 0
-        Top = 187
+        Top = 219
         Width = 179
         Height = 30
         Cursor = crHandPoint
@@ -250,71 +251,6 @@ object frmPessoaCadastro: TfrmPessoaCadastro
           ExplicitHeight = 15
         end
       end
-      object pnlDelFotoBase64: TPanel
-        AlignWithMargins = True
-        Left = 0
-        Top = 219
-        Width = 179
-        Height = 30
-        Cursor = crHandPoint
-        Margins.Left = 0
-        Margins.Top = 1
-        Margins.Right = 0
-        Margins.Bottom = 1
-        Align = alBottom
-        BevelInner = bvLowered
-        ParentColor = True
-        TabOrder = 2
-        object imgDelFotoBase64: TImage
-          AlignWithMargins = True
-          Left = 12
-          Top = 3
-          Width = 20
-          Height = 24
-          Cursor = crHandPoint
-          Margins.Left = 10
-          Margins.Top = 1
-          Margins.Right = 1
-          Margins.Bottom = 1
-          Align = alLeft
-          Center = True
-          Picture.Data = {
-            0954506E67496D61676589504E470D0A1A0A0000000D49484452000000160000
-            00160806000000C4B46C3B000000097048597300000B1300000B1301009A9C18
-            000001684944415478DAD5D54D2804611CC7F167CBCB8503E2E260C981A29094
-            94D2E6E0C04188943850EEC485525B0E8A72DEA21407E2E24029251CA41C10F2
-            12961C44282289EFD333DB4E9A19CDB343F9D7A7A9679ADFEE33CFFF79C6277E
-            A97CFF36D88F348F32EF701E099E40BB47C193E8F8D3E05734A31C7D5E065F23
-            1B6558770838438EDB577122D462A6D884AEA10EDBC87513EC540F28C2054AB1
-            89F858823FD08A453C9BC68730E826F8125DC8C7188218B0F8C124DC9BFEB56D
-            F02742E8C113FA518F0ABCDBCCA6050508E0C02E780E8DA68764E83E8EBE85C5
-            A11B6DC842183358C0A9557013667F78DF32741EB516F7565163151C7698B2AC
-            29A1CE83713CE2067942F57532D2E55AE8B45B2546856AB543A176688331CB15
-            63FC582738037BC65556A7508B1D0997F5A6736CEE08B5E38A8DE997A01ACBD8
-            40A11CD73DE8652B8EE0564477E02E529189A06E7002965065716F4B8EC7F269
-            4A44AF88F6F115A6318C972FDC9E5CD62F0F9FDD0000000049454E44AE426082}
-          ExplicitLeft = 2
-          ExplicitTop = 2
-          ExplicitHeight = 20
-        end
-        object lblDelFotoBase64: TLabel
-          AlignWithMargins = True
-          Left = 38
-          Top = 3
-          Width = 129
-          Height = 24
-          Cursor = crHandPoint
-          Margins.Left = 5
-          Margins.Top = 1
-          Margins.Right = 10
-          Margins.Bottom = 1
-          Align = alClient
-          Caption = 'Remover Foto'
-          Layout = tlCenter
-          ExplicitWidth = 74
-          ExplicitHeight = 15
-        end
-      end
     end
   end
   object Panel1: TPanel
@@ -344,7 +280,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
         Left = 0
         Top = 1
         Width = 179
-        Height = 184
+        Height = 216
         Margins.Left = 0
         Margins.Top = 1
         Margins.Right = 0
@@ -357,7 +293,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
           Left = 2
           Top = 2
           Width = 175
-          Height = 180
+          Height = 212
           Align = alClient
           Center = True
           IncrementalDisplay = True
@@ -371,7 +307,7 @@ object frmPessoaCadastro: TfrmPessoaCadastro
       object pnlAddFotoBinary: TPanel
         AlignWithMargins = True
         Left = 0
-        Top = 187
+        Top = 219
         Width = 179
         Height = 30
         Cursor = crHandPoint
@@ -432,71 +368,6 @@ object frmPessoaCadastro: TfrmPessoaCadastro
           Layout = tlCenter
           OnClick = pnlAddFotoBinaryClick
           ExplicitWidth = 113
-          ExplicitHeight = 15
-        end
-      end
-      object pnlDelFotoBinary: TPanel
-        AlignWithMargins = True
-        Left = 0
-        Top = 219
-        Width = 179
-        Height = 30
-        Cursor = crHandPoint
-        Margins.Left = 0
-        Margins.Top = 1
-        Margins.Right = 0
-        Margins.Bottom = 1
-        Align = alBottom
-        BevelInner = bvLowered
-        ParentColor = True
-        TabOrder = 2
-        object imgDelFotoBinary: TImage
-          AlignWithMargins = True
-          Left = 12
-          Top = 3
-          Width = 20
-          Height = 24
-          Cursor = crHandPoint
-          Margins.Left = 10
-          Margins.Top = 1
-          Margins.Right = 1
-          Margins.Bottom = 1
-          Align = alLeft
-          Center = True
-          Picture.Data = {
-            0954506E67496D61676589504E470D0A1A0A0000000D49484452000000160000
-            00160806000000C4B46C3B000000097048597300000B1300000B1301009A9C18
-            000001684944415478DAD5D54D2804611CC7F167CBCB8503E2E260C981A29094
-            94D2E6E0C04188943850EEC485525B0E8A72DEA21407E2E24029251CA41C10F2
-            12961C44282289EFD333DB4E9A19CDB343F9D7A7A9679ADFEE33CFFF79C6277E
-            A97CFF36D88F348F32EF701E099E40BB47C193E8F8D3E05734A31C7D5E065F23
-            1B6558770838438EDB577122D462A6D884AEA10EDBC87513EC540F28C2054AB1
-            89F858823FD08A453C9BC68730E826F8125DC8C7188218B0F8C124DC9BFEB56D
-            F02742E8C113FA518F0ABCDBCCA6050508E0C02E780E8DA68764E83E8EBE85C5
-            A11B6DC842183358C0A9557013667F78DF32741EB516F7565163151C7698B2AC
-            29A1CE83713CE2067942F57532D2E55AE8B45B2546856AB543A176688331CB15
-            63FC582738037BC65556A7508B1D0997F5A6736CEE08B5E38A8DE997A01ACBD8
-            40A11CD73DE8652B8EE0564477E02E529189A06E7002965065716F4B8EC7F269
-            4A44AF88F6F115A6318C972FDC9E5CD62F0F9FDD0000000049454E44AE426082}
-          ExplicitLeft = 2
-          ExplicitTop = 2
-          ExplicitHeight = 20
-        end
-        object lblDelFotoBinary: TLabel
-          AlignWithMargins = True
-          Left = 38
-          Top = 3
-          Width = 129
-          Height = 24
-          Cursor = crHandPoint
-          Margins.Left = 5
-          Margins.Top = 1
-          Margins.Right = 10
-          Margins.Bottom = 1
-          Align = alClient
-          Caption = 'Remover Foto'
-          Layout = tlCenter
-          ExplicitWidth = 74
           ExplicitHeight = 15
         end
       end

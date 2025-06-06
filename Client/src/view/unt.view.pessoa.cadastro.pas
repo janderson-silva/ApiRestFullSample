@@ -47,9 +47,6 @@ type
     pnlAddFotoBase64: TPanel;
     imgAddFotoBase64: TImage;
     lblAddFotoBase64: TLabel;
-    pnlDelFotoBase64: TPanel;
-    imgDelFotoBase64: TImage;
-    lblDelFotoBase64: TLabel;
     Label1: TLabel;
     edtDocumento: TEdit;
     Label2: TLabel;
@@ -62,9 +59,6 @@ type
     pnlAddFotoBinary: TPanel;
     imgAddFotoBinary: TImage;
     lblAddFotoBinary: TLabel;
-    pnlDelFotoBinary: TPanel;
-    imgDelFotoBinary: TImage;
-    lblDelFotoBinary: TLabel;
     FDMemTablePessoa: TFDMemTable;
     FDMemTablePessoaid: TLargeintField;
     FDMemTablePessoaativo: TBooleanField;

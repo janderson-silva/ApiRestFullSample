@@ -143,7 +143,7 @@
         <DCCReference Include="src\interface\interfaces.token.pas"/>
         <DCCReference Include="src\model\model.token.pas"/>
         <DCCReference Include="src\view\unt.view.login.pas">
-            <Form>Form2</Form>
+            <Form>frmLogin</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="src\view\unt.view.pessoa.cadastro.pas">
@@ -155,6 +155,10 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="src\util\Base64.util.pas"/>
+        <DCCReference Include="src\view\unt.view.login.cadastro.pas">
+            <Form>frmLoginCadastro</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -183,7 +187,7 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="5">
-                <DeployFile LocalName="Win32\Debug\Client.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="bin\Client.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>Client.exe</RemoteName>
                         <Overwrite>true</Overwrite>

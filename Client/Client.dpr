@@ -14,10 +14,11 @@ uses
   route.api in 'src\route\route.api.pas',
   interfaces.token in 'src\interface\interfaces.token.pas',
   model.token in 'src\model\model.token.pas',
-  unt.view.login in 'src\view\unt.view.login.pas' {Form2},
+  unt.view.login in 'src\view\unt.view.login.pas' {frmLogin},
   unt.view.pessoa.cadastro in 'src\view\unt.view.pessoa.cadastro.pas' {frmPessoaCadastro},
   unt.view.pessoa in 'src\view\unt.view.pessoa.pas' {frmPessoa},
-  Base64.util in 'src\util\Base64.util.pas';
+  Base64.util in 'src\util\Base64.util.pas',
+  unt.view.login.cadastro in 'src\view\unt.view.login.cadastro.pas' {frmLoginCadastro};
 
 {$R *.res}
 
