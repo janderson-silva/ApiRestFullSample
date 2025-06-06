@@ -20,6 +20,7 @@ interface
 uses
   RESTRequest4D,
   Data.DB,
+  System.Classes,
   System.JSON,
   System.SysUtils,
   Vcl.Dialogs,
@@ -35,7 +36,7 @@ type
   private
     Fid: LargeInt;
     Fid_pessoa: LargeInt;
-    Ffoto_binary: String;
+    Ffoto_binary: TMemoryStream;
     Fnome_arquivo: String;
     Fextensao: String;
   public
@@ -49,8 +50,8 @@ type
     function id_pessoa(Value: LargeInt): iPessoa_foto_binary; overload;
     function id_pessoa: LargeInt; overload;
 
-    function foto_binary(Value: String): iPessoa_foto_binary; overload;
-    function foto_binary: String; overload;
+    function foto_binary(Value: TMemoryStream): iPessoa_foto_binary; overload;
+    function foto_binary: TMemoryStream; overload;
 
     function nome_arquivo(Value: String): iPessoa_foto_binary; overload;
     function nome_arquivo: String; overload;
@@ -107,9 +108,6 @@ begin
   if Fid_pessoa > 0 then
     JSONFiltro.AddPair('id_pessoa', TJSONNumber.Create(id_pessoa));
 
-  if Ffoto_binary <> '' then
-    JSONFiltro.AddPair('foto_binary', TJSONString.Create(foto_binary));
-
   if Fnome_arquivo <> '' then
     JSONFiltro.AddPair('nome_arquivo', TJSONString.Create(nome_arquivo));
 
@@ -142,21 +140,17 @@ function TPessoa_foto_binary.Insert(OnMessage: Boolean) : String;
 var
   Resp : IResponse;
   Token: string;
-  JSONObject, JSONBody: TJSONObject;
+  JSONObject: TJSONObject;
 begin
   Token := TToken.New
                  .GetToken;
 
-  JSONBody := TJSONObject.Create;
-  JSONBody.AddPair('id_pessoa', TJSONNumber.Create(id_pessoa));
-  JSONBody.AddPair('nome_arquivo', TJSONString.Create(nome_arquivo));
-  JSONBody.AddPair('extensao', TJSONString.Create(extensao));
-
   Resp := TRequest.New
                   .BaseURL(TRoute.GetPessoa_foto_binaryRoute(TRoute.ACTION_INSERT))
                   .TokenBearer(Token)
-                  .AddBody(JSONBody)
-                  .AddFile('foto_binary', foto_binary, 'application/octet-stream')
+                  .AddField('id_pessoa', id_pessoa.ToString)
+                  .AddField('file-name', nome_arquivo)
+                  .AddFile('file', foto_binary)
                   .Post;
 
   if Resp.StatusCode <> 200 then
@@ -187,17 +181,12 @@ begin
   Token := TToken.New
                  .GetToken;
 
-  JSONBody := TJSONObject.Create;
-  JSONBody.AddPair('id', TJSONNumber.Create(id));
-  JSONBody.AddPair('id_pessoa', TJSONNumber.Create(id_pessoa));
-  JSONBody.AddPair('foto_binary', TJSONString.Create(foto_binary));
-  JSONBody.AddPair('nome_arquivo', TJSONString.Create(nome_arquivo));
-  JSONBody.AddPair('extensao', TJSONString.Create(extensao));
-
   Resp := TRequest.New
-                  .BaseURL(TRoute.GetPessoa_foto_binaryRoute(TRoute.ACTION_UPDATE))
+                  .BaseURL(TRoute.GetPessoa_foto_binaryRoute(TRoute.ACTION_INSERT))
                   .TokenBearer(Token)
-                  .AddBody(JSONBody)
+                  .AddField('id_pessoa', id_pessoa.ToString)
+                  .AddField('file-name', nome_arquivo)
+                  .AddFile('file', foto_binary)
                   .Put;
 
   if Resp.StatusCode <> 200 then
@@ -274,13 +263,13 @@ begin
   Result := Fid_pessoa;
 end;
 
-function TPessoa_foto_binary.foto_binary(Value: String): iPessoa_foto_binary;
+function TPessoa_foto_binary.foto_binary(Value: TMemoryStream): iPessoa_foto_binary;
 begin
   Ffoto_binary := Value;
   Result := Self;
 end;
 
-function TPessoa_foto_binary.foto_binary: String;
+function TPessoa_foto_binary.foto_binary: TMemoryStream;
 begin
   Result := Ffoto_binary;
 end;

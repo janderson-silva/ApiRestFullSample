@@ -148,24 +148,32 @@ end;
 
 procedure TfrmPessoaCadastro.CadastrarFotoBinary;
 var
+  LStream: TMemoryStream;
   FPessoaFotoBinary: iPessoa_foto_binary;
 begin
   if FID_PESSOA = 0 then
     raise Exception.Create('O cadastro de pessoa deve ser salvo antes de enviar a foto');
 
-  FPessoaFotoBinary := TPessoa_foto_binary.New;
+  LStream := TMemoryStream.Create;
   try
-    FPessoaFotoBinary
-        .id_pessoa(FID_PESSOA)
-        .foto_binary(imgFotoBinary.Hint)
-        .nome_arquivo(ExtractFileName(imgFotoBinary.Hint))
-        .extensao(ExtractFileExt(imgFotoBinary.Hint))
-      .Insert(True);
-  except on E : Exception do
-    begin
-      raise Exception.Create(E.Message);
-      Exit;
+    imgFotoBinary.Picture.SaveToStream(LStream);
+
+    FPessoaFotoBinary := TPessoa_foto_binary.New;
+    try
+      FPessoaFotoBinary
+          .id_pessoa(FID_PESSOA)
+          .foto_binary(LStream)
+          .nome_arquivo(ExtractFileName(imgFotoBinary.Hint))
+          .extensao(ExtractFileExt(imgFotoBinary.Hint))
+        .Insert(True);
+    except on E : Exception do
+      begin
+        raise Exception.Create(E.Message);
+        Exit;
+      end;
     end;
+  finally
+    LStream.Free;
   end;
 end;
 
