@@ -61,7 +61,9 @@ begin
     if JSONArrayPessoa.Count > 0 then
     begin
       try
-        if not TBCrypt.CompareHash(edtSenha.Text, JSONArrayPessoa[0].GetValue<string>('senha', '')) then
+        if TBCrypt.CompareHash(edtSenha.Text, JSONArrayPessoa[0].GetValue<string>('senha', '')) then
+          Close
+        else
           raise Exception.Create('Senha incorreta!');
       finally
         JSONObject.Free;

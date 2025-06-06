@@ -14,7 +14,8 @@ uses
   Winapi.Windows;
 
 type
-  TForm1 = class(TForm)
+  TfrmPrincipal = class(TForm)
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -22,10 +23,23 @@ type
   end;
 
 var
-  Form1: TForm1;
+  frmPrincipal: TfrmPrincipal;
 
 implementation
 
+uses
+  unt.view.login;
+
 {$R *.dfm}
+
+procedure TfrmPrincipal.FormCreate(Sender: TObject);
+begin
+  frmLogin := TfrmLogin.Create(Self);
+  try
+    frmLogin.ShowModal;
+  finally
+    FreeAndNil(frmLogin);
+  end;
+end;
 
 end.

@@ -2,7 +2,7 @@ program Client;
 
 uses
   Vcl.Forms,
-  unt.view.principal in 'src\view\unt.view.principal.pas' {Form1},
+  unt.view.principal in 'src\view\unt.view.principal.pas' {frmPrincipal},
   interfaces.login in 'src\interface\interfaces.login.pas',
   interfaces.pessoa in 'src\interface\interfaces.pessoa.pas',
   interfaces.pessoa_foto_base64 in 'src\interface\interfaces.pessoa_foto_base64.pas',
@@ -26,6 +26,6 @@ uses
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TfrmLogin, frmLogin);
+  Application.CreateForm(TfrmPrincipal, frmPrincipal);
   Application.Run;
 end.

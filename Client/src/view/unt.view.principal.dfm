@@ -1,14 +1,17 @@
-object Form1: TForm1
+object frmPrincipal: TfrmPrincipal
   Left = 0
   Top = 0
-  Caption = 'Form1'
+  BorderStyle = bsSingle
+  Caption = 'frmPrincipal'
   ClientHeight = 441
-  ClientWidth = 624
-  Color = clBtnFace
+  ClientWidth = 964
+  Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  Position = poOwnerFormCenter
+  OnCreate = FormCreate
   TextHeight = 15
 end
