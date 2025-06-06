@@ -111,6 +111,7 @@ object frmLoginCadastro: TfrmLoginCadastro
       Width = 448
       Height = 23
       Align = alTop
+      PasswordChar = '*'
       TabOrder = 1
     end
     object edtEmail: TEdit

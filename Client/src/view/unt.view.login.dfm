@@ -17,21 +17,23 @@ object frmLogin: TfrmLogin
   TextHeight = 15
   object pnlDados: TPanel
     AlignWithMargins = True
-    Left = 0
+    Left = 15
     Top = 3
-    Width = 469
+    Width = 454
     Height = 125
-    Margins.Left = 0
+    Margins.Left = 15
     Margins.Right = 15
     Align = alClient
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
+    ExplicitLeft = 0
+    ExplicitWidth = 469
     object Label1: TLabel
       AlignWithMargins = True
       Left = 3
       Top = 74
-      Width = 463
+      Width = 448
       Height = 15
       Margins.Top = 15
       Margins.Bottom = 0
@@ -43,7 +45,7 @@ object frmLogin: TfrmLogin
       AlignWithMargins = True
       Left = 3
       Top = 15
-      Width = 463
+      Width = 448
       Height = 15
       Margins.Top = 15
       Margins.Bottom = 0
@@ -55,19 +57,21 @@ object frmLogin: TfrmLogin
       AlignWithMargins = True
       Left = 3
       Top = 92
-      Width = 463
+      Width = 448
       Height = 23
       Align = alTop
+      PasswordChar = '*'
       TabOrder = 1
     end
     object edtEmail: TEdit
       AlignWithMargins = True
       Left = 3
       Top = 33
-      Width = 463
+      Width = 448
       Height = 23
       Align = alTop
       TabOrder = 0
+      ExplicitWidth = 463
     end
   end
   object pnlButton: TPanel

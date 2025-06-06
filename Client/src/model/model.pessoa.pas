@@ -220,7 +220,7 @@ begin
                  .GetToken;
 
   Resp := TRequest.New
-                  .BaseURL(TRoute.GetPessoaRoute(TRoute.ACTION_DELETE))
+                  .BaseURL(TRoute.GetPessoaRoute(TRoute.ACTION_DELETE) + '/' + id.ToString)
                   .TokenBearer(Token)
                   .Delete;
 

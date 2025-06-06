@@ -12,6 +12,7 @@ object frmPrincipal: TfrmPrincipal
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poScreenCenter
+  WindowState = wsMaximized
   OnCreate = FormCreate
   TextHeight = 15
   object pnlLateral: TPanel
@@ -24,8 +25,6 @@ object frmPrincipal: TfrmPrincipal
     BevelKind = bkFlat
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitTop = -74
-    ExplicitHeight = 515
     object pnlLogin: TPanel
       AlignWithMargins = True
       Left = 10
@@ -323,9 +322,7 @@ object frmPrincipal: TfrmPrincipal
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = -80
-    ExplicitWidth = 484
-    ExplicitHeight = 521
+    ExplicitWidth = 324
     object Image4: TImage
       AlignWithMargins = True
       Left = 15
@@ -12478,8 +12475,7 @@ object frmPrincipal: TfrmPrincipal
       ReadOnly = True
       ScrollBars = ssBoth
       TabOrder = 0
-      ExplicitWidth = 454
-      ExplicitHeight = 271
+      ExplicitWidth = 294
     end
   end
 end
