@@ -26,9 +26,6 @@ object frmLogin: TfrmLogin
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
-    ExplicitLeft = 265
-    ExplicitWidth = 359
-    ExplicitHeight = 265
     object Label1: TLabel
       AlignWithMargins = True
       Left = 3
@@ -61,7 +58,6 @@ object frmLogin: TfrmLogin
       Height = 23
       Align = alTop
       TabOrder = 1
-      ExplicitWidth = 603
     end
     object edtEmail: TEdit
       AlignWithMargins = True
@@ -71,7 +67,6 @@ object frmLogin: TfrmLogin
       Height = 23
       Align = alTop
       TabOrder = 0
-      ExplicitWidth = 603
     end
   end
   object pnlButton: TPanel
@@ -83,9 +78,6 @@ object frmLogin: TfrmLogin
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 1
-    ExplicitLeft = -160
-    ExplicitTop = 271
-    ExplicitWidth = 784
     object pnlLogin: TPanel
       AlignWithMargins = True
       Left = 3
@@ -106,6 +98,7 @@ object frmLogin: TfrmLogin
       ParentFont = False
       TabOrder = 0
       StyleElements = []
+      OnClick = pnlLoginClick
     end
   end
 end

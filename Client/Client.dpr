@@ -26,6 +26,6 @@ uses
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TfrmLoginLista, frmLoginLista);
+  Application.CreateForm(TfrmLogin, frmLogin);
   Application.Run;
 end.
