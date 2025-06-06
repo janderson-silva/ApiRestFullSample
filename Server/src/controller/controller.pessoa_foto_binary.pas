@@ -19,7 +19,6 @@ interface
 
 uses
   Horse,
-  Horse.OctetStream,
   Data.DB,
   System.Classes,
   System.JSON,
@@ -67,8 +66,8 @@ procedure InsertPessoa_foto_binary(Req: THorseRequest; Res: THorseResponse);
 var
   FPessoa_foto_binary : iPessoa_foto_binary;
   Erro : string;
-  body  : TJsonValue;
-  LType: string;
+  LID_PESSOA: Integer;
+  LPath: string;
 begin
   // Conexao com o banco...
   try
@@ -79,17 +78,26 @@ begin
   end;
 
   try
-    LType := Copy(Req.RawWebRequest.ContentType, Pos('/', Req.RawWebRequest.ContentType) + 1, Req.RawWebRequest.ContentType.Length);
+    LID_PESSOA := 0;
+    LPath := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) + 'temp';
+    ForceDirectories(LPath); // Garante que a pasta exista;
 
-    body := TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(Req.Body), 0) as TJsonValue;
+    if Req.ContentFields.Field('id_pessoa').AsInteger > 0 then
+      LID_PESSOA := Req.ContentFields.Field('id_pessoa').AsInteger;
+
+    if (not Req.ContentFields.Field('file-name').AsString.IsEmpty) and (Req.ContentFields.Field('file').AsStream.Size > 0) then
+    begin
+      LPath := LPath + Req.ContentFields.Field('file-name').AsString;
+      Req.ContentFields.Field('file').SaveToFile(LPath);
+    end;
+
     FPessoa_foto_binary
-        .id_pessoa(body.GetValue<LargeInt>('id_pessoa',0))
-        //.foto_binary(LArquivo)
-        .nome_arquivo(body.GetValue<String>('nome_arquivo',''))
-        .extensao(body.GetValue<String>('extensao',''))
+        .id_pessoa(LID_PESSOA)
+        .foto_binary(LPath)
+        .nome_arquivo(ExtractFileName(LPath))
+        .extensao(ExtractFileExt(LPath))
       .Insert(Erro);
 
-    body.Free;
     if Erro <> '' then
       raise Exception.Create(Erro)
     else

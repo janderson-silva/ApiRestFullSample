@@ -30,8 +30,8 @@ type
     function id_pessoa(Value: LargeInt): iPessoa_foto_binary; overload;
     function id_pessoa: LargeInt; overload;
 
-    function foto_binary(Value: TBytes): iPessoa_foto_binary; overload;
-    function foto_binary: TBytes; overload;
+    function foto_binary(Value: String): iPessoa_foto_binary; overload;
+    function foto_binary: String; overload;
 
     function nome_arquivo(Value: String): iPessoa_foto_binary; overload;
     function nome_arquivo: String; overload;

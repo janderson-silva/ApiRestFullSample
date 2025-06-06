@@ -32,7 +32,7 @@ type
   private
     Fid: LargeInt;
     Fid_pessoa: LargeInt;
-    Ffoto_binary: TBytes;
+    Ffoto_binary: String;
     Fnome_arquivo: String;
     Fextensao: String;
 
@@ -48,8 +48,8 @@ type
     function id_pessoa(Value: LargeInt): iPessoa_foto_binary; overload;
     function id_pessoa: LargeInt; overload;
 
-    function foto_binary(Value: TBytes): iPessoa_foto_binary; overload;
-    function foto_binary: TBytes; overload;
+    function foto_binary(Value: String): iPessoa_foto_binary; overload;
+    function foto_binary: String; overload;
 
     function nome_arquivo(Value: String): iPessoa_foto_binary; overload;
     function nome_arquivo: String; overload;
@@ -178,8 +178,7 @@ begin
       qry.SQL.Add(')');
       qry.SQL.Add('returning id;');
       qry.ParamByName('id_pessoa').AsLargeInt:= Fid_pessoa;
-      qry.ParamByName('foto_binary').DataType := ftBlob;
-      qry.ParamByName('foto_binary').LoadFromStream(TBytesStream.Create(Ffoto_binary), ftBlob);
+      qry.ParamByName('foto_binary').LoadFromFile(Ffoto_binary, ftBlob);
       qry.ParamByName('nome_arquivo').AsString:= Fnome_arquivo;
       qry.ParamByName('extensao').AsString:= Fextensao;
 
@@ -224,7 +223,7 @@ begin
       qry.SQL.Add('WHERE id = :id');
       qry.ParamByName('id').AsLargeInt:= Fid;
       qry.ParamByName('id_pessoa').AsLargeInt:= Fid_pessoa;
-      //qry.ParamByName('foto_binary').AsString:= Ffoto_binary;
+      qry.ParamByName('foto_binary').LoadFromFile(Ffoto_binary, ftBlob);
       qry.ParamByName('nome_arquivo').AsString:= Fnome_arquivo;
       qry.ParamByName('extensao').AsString:= Fextensao;
       qry.ExecSQL;
@@ -284,13 +283,13 @@ begin
   Result := Fid_pessoa;
 end;
 
-function TPessoa_foto_binary.foto_binary(Value: TBytes): iPessoa_foto_binary;
+function TPessoa_foto_binary.foto_binary(Value: String): iPessoa_foto_binary;
 begin
   Ffoto_binary := Value;
   Result := Self;
 end;
 
-function TPessoa_foto_binary.foto_binary: TBytes;
+function TPessoa_foto_binary.foto_binary: String;
 begin
   Result := Ffoto_binary;
 end;
