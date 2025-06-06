@@ -149,8 +149,9 @@ begin
                   .BaseURL(TRoute.GetPessoa_foto_binaryRoute(TRoute.ACTION_INSERT))
                   .TokenBearer(Token)
                   .AddField('id_pessoa', id_pessoa.ToString)
-                  .AddField('file-name', nome_arquivo)
-                  .AddFile('file', foto_binary)
+                  .AddFile('foto_binary', foto_binary)
+                  .AddField('nome_arquivo', nome_arquivo)
+                  .AddField('extensao', extensao)
                   .Post;
 
   if Resp.StatusCode <> 200 then
@@ -184,9 +185,11 @@ begin
   Resp := TRequest.New
                   .BaseURL(TRoute.GetPessoa_foto_binaryRoute(TRoute.ACTION_INSERT))
                   .TokenBearer(Token)
+                  .AddField('id', id.ToString)
                   .AddField('id_pessoa', id_pessoa.ToString)
-                  .AddField('file-name', nome_arquivo)
-                  .AddFile('file', foto_binary)
+                  .AddFile('foto_binary', foto_binary)
+                  .AddField('nome_arquivo', nome_arquivo)
+                  .AddField('extensao', extensao)
                   .Put;
 
   if Resp.StatusCode <> 200 then

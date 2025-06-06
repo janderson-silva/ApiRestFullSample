@@ -66,8 +66,11 @@ procedure InsertPessoa_foto_binary(Req: THorseRequest; Res: THorseResponse);
 var
   FPessoa_foto_binary : iPessoa_foto_binary;
   Erro : string;
+
   LID_PESSOA: Integer;
-  LPath: string;
+  LFotoBinary: TMemoryStream;
+  LNome_arquivo: string;
+  LExtensao: string;
 begin
   // Conexao com o banco...
   try
@@ -77,36 +80,40 @@ begin
     Exit;
   end;
 
+  LFotoBinary := TMemoryStream.Create;
   try
-    LID_PESSOA := 0;
-    LPath := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) + 'temp';
-    ForceDirectories(LPath); // Garante que a pasta exista;
+    try
+      if Req.ContentFields.ContainsKey('id_pessoa') then
+        LID_PESSOA := Req.ContentFields.Field('id_pessoa').AsInteger;
 
-    if Req.ContentFields.Field('id_pessoa').AsInteger > 0 then
-      LID_PESSOA := Req.ContentFields.Field('id_pessoa').AsInteger;
+      if Req.ContentFields.Field('stream').AsStream <> nil then
+        LFotoBinary.LoadFromStream(Req.ContentFields.Field('stream').AsStream);
 
-    if (not Req.ContentFields.Field('file-name').AsString.IsEmpty) and (Req.ContentFields.Field('file').AsStream.Size > 0) then
-    begin
-      LPath := LPath + Req.ContentFields.Field('file-name').AsString;
-      Req.ContentFields.Field('file').SaveToFile(LPath);
+      if Req.ContentFields.ContainsKey('nome_arquivo') then
+        LNome_arquivo := Req.ContentFields.Field('nome_arquivo').AsString;
+
+      if Req.ContentFields.ContainsKey('extensao') then
+        LExtensao := Req.ContentFields.Field('extensao').AsString;
+
+      FPessoa_foto_binary
+          .id_pessoa(LID_PESSOA)
+          .foto_binary(LFotoBinary)
+          .nome_arquivo(LNome_arquivo)
+          .extensao(LExtensao)
+        .Insert(Erro);
+
+      if Erro <> '' then
+        raise Exception.Create(Erro)
+      else
+        Res.Send(TJSONObject.Create.AddPair('Sucesso', 'Salvo com sucesso').AddPair('id', FPessoa_foto_binary.id.ToString)).Status(200);
+    except on E : Exception do
+      begin
+        Res.Send(TJSONObject.Create.AddPair('Erro', E.Message)).Status(500);
+        Exit;
+      end;
     end;
-
-    FPessoa_foto_binary
-        .id_pessoa(LID_PESSOA)
-        .foto_binary(LPath)
-        .nome_arquivo(ExtractFileName(LPath))
-        .extensao(ExtractFileExt(LPath))
-      .Insert(Erro);
-
-    if Erro <> '' then
-      raise Exception.Create(Erro)
-    else
-      Res.Send(TJSONObject.Create.AddPair('Sucesso', 'Salvo com sucesso').AddPair('id', FPessoa_foto_binary.id.ToString)).Status(200);
-  except on E : Exception do
-    begin
-      Res.Send(TJSONObject.Create.AddPair('Erro', E.Message)).Status(500);
-      Exit;
-    end;
+  finally
+    LFotoBinary.Free;
   end;
 end;
 
@@ -114,7 +121,12 @@ procedure UpdatePessoa_foto_binary(Req: THorseRequest; Res: THorseResponse);
 var
   FPessoa_foto_binary : iPessoa_foto_binary;
   Erro : string;
-  body  : TJsonValue;
+
+  LID: Integer;
+  LID_PESSOA: Integer;
+  LFotoBinary: TMemoryStream;
+  LNome_arquivo: string;
+  LExtensao: string;
 begin
   // Conexao com o banco...
   try
@@ -124,26 +136,44 @@ begin
     Exit;
   end;
 
+  LFotoBinary := TMemoryStream.Create;
   try
-    body := TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(req.Body), 0) as TJsonValue;
-    FPessoa_foto_binary
-        .id(body.GetValue<LargeInt>('id',0))
-        .id_pessoa(body.GetValue<LargeInt>('id_pessoa',0))
-        //.foto_binary(body.GetValue<String>('foto_binary',''))
-        .nome_arquivo(body.GetValue<String>('nome_arquivo',''))
-        .extensao(body.GetValue<String>('extensao',''))
-      .Update(Erro);
+    try
+      if Req.ContentFields.ContainsKey('id') then
+        LID := Req.ContentFields.Field('id').AsInteger;
 
-    body.Free;
-    if Erro <> '' then
-      raise Exception.Create(Erro)
-    else
-      Res.Send(TJSONObject.Create.AddPair('Sucesso', 'Atualizado com sucesso').AddPair('id', FPessoa_foto_binary.id.ToString)).Status(200);
-  except on E : Exception do
-    begin
-      Res.Send(TJSONObject.Create.AddPair('Erro', E.Message)).Status(500);
-      Exit;
+      if Req.ContentFields.ContainsKey('id_pessoa') then
+        LID_PESSOA := Req.ContentFields.Field('id_pessoa').AsInteger;
+
+      if Req.ContentFields.Field('stream').AsStream <> nil then
+        LFotoBinary.LoadFromStream(Req.ContentFields.Field('stream').AsStream);
+
+      if Req.ContentFields.ContainsKey('nome_arquivo') then
+        LNome_arquivo := Req.ContentFields.Field('nome_arquivo').AsString;
+
+      if Req.ContentFields.ContainsKey('extensao') then
+        LExtensao := Req.ContentFields.Field('extensao').AsString;
+
+      FPessoa_foto_binary
+          .id(LID)
+          .id_pessoa(LID_PESSOA)
+          .foto_binary(LFotoBinary)
+          .nome_arquivo(LNome_arquivo)
+          .extensao(LExtensao)
+        .Update(Erro);
+
+      if Erro <> '' then
+        raise Exception.Create(Erro)
+      else
+        Res.Send(TJSONObject.Create.AddPair('Sucesso', 'Atualizado com sucesso').AddPair('id', FPessoa_foto_binary.id.ToString)).Status(200);
+    except on E : Exception do
+      begin
+        Res.Send(TJSONObject.Create.AddPair('Erro', E.Message)).Status(500);
+        Exit;
+      end;
     end;
+  finally
+    LFotoBinary.Free;
   end;
 end;
 
